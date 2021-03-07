@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>register</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'main.css') }}">
+</head>
+
+<body>
+    <!-- Tabs Titles -->
+    <h2 class="active"> Sign In </h2>
+
+
+    <!-- Login Form -->
+    <form action="/registers" method="POST">
+        <label for="cars">Choose a Client_type:</label>
+        <select  name="client_type">
+            <option value="student">student</option>
+            <option value="faculty">faculty</option>
+            <option value="others">others</option>
+        </select>
+        <input type="text" id="name" name="name" placeholder="client name">
+        <input type="email" id="emailid" name="client_emailid" placeholder="email id">
+        <label for="year">Choose a Client_year:</label>
+        <select id="year" name="year">
+            <option value="I">I</option>
+            <option value="II">II</option>
+            <option value="III">III</option>
+            <option value="IV">IV</option>
+        </select>
+        <label for="dept">Choose a Department:</label>
+        <select id="dept" name="dept">
+            <option value="CT">CT</option>
+            <option value="CSE">CSE</option>
+            <option value="III">III</option>
+            <option value="IV">IV</option>
+        </select>
+        <input type="date" id="start_date" name="start_date" placeholder="start_date">
+        <input type="date" id="end_date" name="end_date" placeholder="end_date">
+        <input type="text" id="username" name="username" placeholder="user name">
+        <input type="text" id="passowrd" name="password" placeholder="password">
+        <input type="text" id="dbname" name="dbname" placeholder="db name">
+        <input type="text" id="remark" name="remark" placeholder="remark">
+
+        <input type="submit" value="register">
+    </form>
+
+
+</body>
+
+</html>
