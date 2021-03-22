@@ -11,6 +11,12 @@
    <h1> Email Id  {{user.email}}</h1>
    <h1> Contact  {{user.contact}}</h1>
 
+   <form action="profile" method="POST">
+        <input type="text" id="login" class="fadeIn second" name="name"  value={{user.rollno}} placeholder="Usern Nmae" disabled>
+        <input type="text" id="login" class="fadeIn second" name="dbpasswd"  value={{password}} placeholder="Database Password" >
+        <input type="submit" class="fadeIn fourth" name="update" value="update">
+
+</form>
 </body>
 
 </html>

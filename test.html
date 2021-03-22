@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>register</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'main.css') }}">
+</head>
+
+<body>
+    <!-- Tabs Titles -->
+    <h2 class="active"> Sign In </h2>
+    <form action="/student/registe" method="POST">
+
+    <img src="{{student.picture}}" />
+    <input type="text" id="name" name="name" value="{{student.name}}" placeholder="Student Name" hidden>
+    <input type="email" id="username" name="email" value="{{student.email}}" placeholder="user name">
+    <input type="text" id="rollno" name="rollno"  placeholder="roll no">
+    <input type="text" id="contact" name="contact" placeholder="contact">
+    <input type="hidden" name="profile" value="{{student.picture}}">
+    <input type="text" id="dept" name="dept" value="{{a}}" placeholder="department">
+    <!-- Login Form -->    
+
+        <input type="submit" value="register">
+    </form>
+
+
+</body>
+
+</html>

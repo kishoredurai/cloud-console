@@ -70,8 +70,11 @@ person = {"is_logged_in": False, "name": "", "email": "", "uid": "" , "contact":
 @app.route("/")
 def login():
     #return render_template("Student/student_home.html")
-    if person["is_logged_in"] == True and person["user_type"] == 'provider':
-        return redirect(url_for('welcome'))
+    if person["is_logged_in"] == True:
+        if(person["user_type"] == 'provider'):
+            return redirect(url_for('welcome'))
+        elif(person["user_type"] == 'student'):
+            return redirect(url_for('home'))
     else:
         return render_template("login.html")
 
@@ -141,7 +144,6 @@ def google_authorize():
 @app.route("/student/registe", methods=["POST", "GET"])
 def registe():
 
-    
     if request.method == "POST":
         result = request.form
         email = result["email"]
@@ -356,11 +358,24 @@ def register():
 
 ###### Student Login  #########
 
-@app.route("/profile")
+@app.route("/profile", methods=["POST", "GET"])
 def student_profile():
-    if person["is_logged_in"] == True and person["user_type"] == 'student':
 
-       return render_template("Student/student_profile.html", user=person)
+    if person["is_logged_in"] == True and person["user_type"] == 'student':
+        
+        if request.method == "POST":
+            if request.form.get("update"):
+                result = request.form  # Get the data
+                ss = result["dbpasswd"]
+                cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+                cursor.execute('update user set db_password=%s where user_id=%s;', [ss,person['user_id']])
+                mysql.connection.commit()            
+                return redirect(url_for('profile'))
+
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM user where user_id = %s',[person['user_id']])
+        student = cursor.fetchone()
+        return render_template("Student/student_profile.html", user=person , password=student['db_password'])
 
     else:
         return redirect(url_for('login'))
@@ -400,3 +415,24 @@ def registers():
         mysql.connection.commit()
         return redirect(url_for('student_database'))
     return render_template("Student/student_db_register.html",user=person)
+
+
+
+@app.route("/db_update", methods=["POST", "GET"])
+def db_update():
+    if request.method == "POST":
+        if request.form.get("delete"):
+            result = request.form  # Get the data
+            ss = result["delete"]
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('Delete from database_users where db_id=%s;', [ss])
+            mysql.connection.commit()            
+            return redirect(url_for('student_database'))
+
+        if request.form.get("submit_a"):
+            result = request.form  # Get the data
+            ss = result["submit_a"]
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('update database_users set db_status = "Deactive" , Request_status = "Rejected" where db_id=%s;', [ss])
+            mysql.connection.commit()            
+            return Response("<h1> decline :"+ss+"</h1>")
