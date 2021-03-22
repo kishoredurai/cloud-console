@@ -61,7 +61,8 @@ auth = firebase.auth()
 db = firebase.database()
 
 # Initialze person as dictionary
-person = {"is_logged_in": False, "name": "", "email": "", "uid": ""}
+person = {"is_logged_in": False, "name": "", "email": "", "uid": "" , "contact": "" , "user_type": "" , "rollno": "" , "dept": "","user_id":"" , "user_profile" : ""}
+
 
 # Login
 
@@ -89,15 +90,42 @@ def google_authorize():
     google = oauth.create_client('google')
     token = google.authorize_access_token()
     resp = google.get('userinfo').json()
-    text = resp["email"]
-    result = re.split(r"\.", text)
-    a=result[1][:2]
-    if(a=="cs"):
-        a="COMPUTER SCIENCE AND ENGINEERING"
-    if(a=="ct"):
-        a="Computer Technology"
-    print((result[1][:2]))
-    print(f"\n{resp}\n")
+    email=resp["email"]
+    name=resp["given_name"]
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM user where email_id=%s LIMIT 1',[email])
+    student = cursor.fetchone()
+    print(student)
+    if(student):
+        global person
+        person["is_logged_in"] = True
+        person["email"] = resp["email"]
+        person["name"] = student['name']
+        person["user_type"] = 'student'
+        person["dept"] = student['department']
+
+        person["rollno"] = student['rollno']
+        person["user_id"] = student['user_id']
+
+        person["contact"] = student['mobile']
+
+        person["user_profile"] = resp["picture"]
+            
+        #return redirect(url_for('login'))
+        return redirect(url_for('home'))
+
+    else:
+        text = resp["email"]
+        result = re.split(r"\.", text)
+        a=result[1][:2]
+        if(a=="cs"):
+            a="COMPUTER SCIENCE AND ENGINEERING"
+        if(a=="ct"):
+             a="COMPUTER TECHNOLOGY"
+        print((result[1][:2]))
+        return render_template("Student/student_register.html",student=resp,a=a)
+
+
     # return render_template('edit.html',resp=resp,a=a)
     return redirect(url_for('login'))
 
@@ -107,9 +135,40 @@ def google_authorize():
 
 
 
+#Student Register
 
 
+@app.route("/student/registe", methods=["POST", "GET"])
+def registe():
 
+    
+    if request.method == "POST":
+        result = request.form
+        email = result["email"]
+        rollno = result["rollno"]
+        name = result["name"]
+        contact = result["contact"]
+        dept = result["dept"]
+        profile = result["profile"]
+       
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('insert into user(name,rollno,department,email_id,mobile,user_profile,db_password,user_type) values(%s,%s,%s,%s,%s,%s,%s,"student")', [name,rollno,dept,email,contact,profile,rollno])
+        mysql.connection.commit()
+
+        return redirect(url_for('login'))
+    else:
+        return redirect(url_for('login'))
+
+    if person["is_logged_in"] == True and person["user_type"] == 'provider':
+       return render_template("profile.html", email=person["email"], name=person["name"],contact=person["contact"])
+
+    else:
+        return redirect(url_for('login'))
+
+   
+@app.route("/home")
+def home():
+        return render_template("Student/student_home.html",stu=person)
 
 
 
@@ -122,6 +181,9 @@ def profile():
 
     else:
         return redirect(url_for('login'))
+
+
+
 
 
 
@@ -183,36 +245,14 @@ def database():
         return redirect(url_for('login'))
 
 
-@app.route("/registers", methods=["POST", "GET"])
-def registers():
-    if request.method == "POST":
-        result = request.form
-        client_type = result["client_type"]
-        name = result["name"]
-        client_emailid = result["client_emailid"]
-        year = result["year"]
-        dept = result["dept"]
-        start_date = result["start_date"]
-        end_date = result["end_date"]
-        username = result["username"]
-        password = result["password"]
-        dbname = result["dbname"]
-        remark = result["remark"]
-        status = "active"
-        pro_email=person["email"]
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('insert into database_users(client_type, client_name, client_emailid,client_year, client_dept, start_date, end_date, db_username, db_password, db_name, status, remark) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', [
-                       client_type, name, client_emailid, year, dept, start_date, end_date, username, password, dbname, status, remark])
-        mysql.connection.commit()
 
-    return render_template("register.html")
 
 # Welcome page
 
 
 @app.route("/welcome")
 def welcome():
-    if person["is_logged_in"] == True:
+    if person["is_logged_in"] == True and person["user_type"]=='provider':
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         account=cursor.execute('SELECT COUNT(*) FROM database_users')
         print(account)
@@ -235,7 +275,7 @@ def sas():
             result = request.form  # Get the data
             ss = result["submit_b"]
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('update database_users set db_status = "Active" , Request_status = "Accepted" , start_date=CURRENT_TIMESTAMP  where db_id=%s;', [ss])
+            cursor.execute('update database_users set db_status = "Active" , Request_status = "Accepted"  where db_id=%s;', [ss])
             mysql.connection.commit()            
             return Response("<h1>"+ss+"</h1>")
 
@@ -314,3 +354,49 @@ def register():
 
 
 
+###### Student Login  #########
+
+@app.route("/profile")
+def student_profile():
+    if person["is_logged_in"] == True and person["user_type"] == 'student':
+
+       return render_template("Student/student_profile.html", user=person)
+
+    else:
+        return redirect(url_for('login'))
+
+@app.route("/student_database")
+def student_database():
+    if person["is_logged_in"] == True and person["user_type"] == 'student':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        
+        cursor.execute('SELECT * FROM database_users where user_id = %s',[person['user_id']])
+        account = cursor.fetchall()
+        return render_template("Student/student_database.html",value=account,user=person)
+
+    else:
+        return redirect(url_for('login'))
+
+    
+@app.route("/db_register", methods=["POST", "GET"])
+def registers():
+    
+    if request.method == "POST":
+
+        result = request.form   
+        software = result["database"]
+        start_date = result["startdate"]
+        end_date = result["enddate"]
+        
+        dbname = result["dbname"]
+        remark = result["remark"]
+
+        status = "Not Approved"
+
+
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('insert into database_users(user_id, db_software, start_date, end_date, db_name, Request_status, user_remark) values(%s,%s,%s,%s,%s,%s,%s)', [
+                       person['user_id'],software,start_date,end_date, dbname, status, remark])
+        mysql.connection.commit()
+        return redirect(url_for('student_database'))
+    return render_template("Student/student_db_register.html",user=person)

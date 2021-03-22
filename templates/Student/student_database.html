@@ -1,0 +1,44 @@
+{% include 'headers/student_header.html' %}
+
+<!DOCTYPE html>
+<html>
+
+<body>
+    <a class="btn btn-primary" href="db_register">Create</a>
+    <form method ="post" action="/sas">
+
+        <table class="table">
+            <thead>
+                <th>Applied Date</th>
+                <th>Database</th>
+                <th>User Type</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Database status</th>
+                <th>Action</th>
+    
+            </thead>
+            <tbody>
+    
+                {% for row in value %}    
+                       <tr>
+                           <td>{{row.applied_date}}</td>
+                           <td>{{row.db_software}}</td>
+                           <td>{{row.user_type}}</td>
+                           {% if row.start_date == "NULL" %}<td>Not Approved </td>{% endif %}
+                           {% if row.start_date != "" %}<td>{{row.start_date}}</td>{% endif %}
+                           <td>{{row.end_date}}</td>
+                           <td>{{row.db_status}}</td>
+                           <td>{% if row.Request_status == "Not Approved" %}
+                               <button type="submit" name="submit_a" value="{{row.db_id}}">Delete</button>
+                           <button type="submit" name="submit_b" value="{{row.db_id}}">Approve</button></td>
+                           {% endif %}
+                       </tr>
+                   {% endfor %}
+               </tbody>
+        </table>
+    </form> 
+    
+</body>
+
+</html>

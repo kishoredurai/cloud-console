@@ -1,40 +1,32 @@
+{% include 'headers/provider_header.html' %}
+
 <!DOCTYPE html>
-<html>
-<head>
-	<title>Pyrebase-Flask-Login</title>
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'main.css') }}">
-</head>
 <body>
-<div class="wrapper fadeInDown">
-  <div id="formContent">
-    <!-- Tabs Titles -->
-    <h2 class="active"> Sign In </h2>
-    <a href="http://127.0.0.1:5000/signup"><h2 class="inactive underlineHover">Sign Up </h2></a>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Student</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="welcome">Home</a></li>
+                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">service <span
+                            class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/database">Page 1-1</a></li>
+                        <li><a href="/">Page 1-2</a></li>
+                        <li><a href="#">Page 1-3</a></li>
+                    </ul>
+                </li>
+                <li><a href="/registers">Page 2</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/profile"><span class="glyphicon glyphicon-user"></span>Hi, {{stu.name}}</a></li>
+                <li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+<img src="{{stu.user_profile}}"/>
 
-    <!-- Icon -->
-    <div class="fadeIn first">
-      <img src="static/user.png" alt="User Icon" />
-    </div>
-
-    <!-- Login Form -->
-    <form action="http://127.0.0.1:5000/result" method="POST">
-      <input type="email" id="login" class="fadeIn second" name="email" placeholder="email">
-      <input type="password" id="password" class="fadeIn third" name="pass" placeholder="password">
-      <input type="submit" class="fadeIn fourth" value="Log In">
-      <div id="oauth-google">
-        <a href="">
-          <img src="{{ url_for('static', filename='/images/google-logo.png') }}" 
-          width="55px" height="55px" alt="Google logo">
-        </a>
-      </div>
-    </form>
-<!-- 
-	Will add in future
-    <div id="formFooter">
-      <a class="underlineHover" href="#">Forgot Password?</a>
-    </div>
- -->
-  </div>
-</div>
 </body>
+
 </html>
