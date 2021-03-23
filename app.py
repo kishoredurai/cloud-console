@@ -429,10 +429,22 @@ def db_update():
             mysql.connection.commit()            
             return redirect(url_for('student_database'))
 
-        if request.form.get("submit_a"):
+        if request.form.get("update"):
             result = request.form  # Get the data
-            ss = result["submit_a"]
+            ss = result["update"]
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('update database_users set db_status = "Deactive" , Request_status = "Rejected" where db_id=%s;', [ss])
-            mysql.connection.commit()            
-            return Response("<h1> decline :"+ss+"</h1>")
+            cursor.execute('SELECT * FROM database_users where db_id=%s;',[ss])
+            data = cursor.fetchone()           
+            return render_template("Student/student_db_update.html",user=person,data=data)
+
+       ###--- database update Form ----###
+        result = request.form  # Get the data
+        start_date = result["startdate"]
+        end_date = result["enddate"]
+        id = result["id"]
+        dbname = result["dbname"]
+        remark = result["remark"]
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('update database_users set start_date=%s ,end_date=%s,db_name=%s,user_remark=%s where db_id=%s;',[start_date,end_date,dbname,remark,id])
+        mysql.connection.commit()
+        return redirect(url_for('student_database'))

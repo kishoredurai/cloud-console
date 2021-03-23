@@ -9,12 +9,12 @@
 
         <table class="table">
             <thead>
-                <th>Applied Date</th>
-                <th>Database</th>
-                <th>User Type</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Database status</th>
+                <th>Database Software</th>
+                <th>From Date</th>
+                <th>To Date</th>
+                <th>Database Name</th>
+                <th>Database Account Status</th>
+                <th>Request status</th>
                 <th>Action</th>
     
             </thead>
@@ -22,15 +22,16 @@
     
                 {% for row in value %}    
                        <tr>
-                           <td>{{row.applied_date}}</td>
                            <td>{{row.db_software}}</td>
-                           <td>{{row.user_type}}</td>
-                           {% if row.start_date == "NULL" %}<td>Not Approved </td>{% endif %}
-                           {% if row.start_date != "" %}<td>{{row.start_date}}</td>{% endif %}
+                           <td>{{row.start_date}}</td>
                            <td>{{row.end_date}}</td>
+                           <td>{{row.db_name}}</td>
                            <td>{{row.db_status}}</td>
+                           <td>{{row.Request_status}}</td>
+                           {% if row.Request_status == "Approved" %}<td>Database Approved</td>{% endif %}
                            <td>{% if row.Request_status == "Not Approved" %}
                                <button type="submit" name="delete" value="{{row.db_id}}">Delete</button>
+                               <button type="submit" name="update" value="{{row.db_id}}">Update</button>
                            {% endif %}
                        </tr>
                    {% endfor %}
