@@ -1,144 +1,4 @@
-import pyrebase
-from flask import Flask, flash, redirect, render_template, request, session, abort, url_for,Response
-from flask_mysqldb import MySQL
-from authlib.integrations.flask_client import OAuth
-import re
-
-import MySQLdb.cursors
-
-app = Flask(__name__)  # Initialze flask constructor
-mysql = MySQL(app)
-oauth = OAuth(app)
-
-
-app.config['MYSQL_HOST'] = '127.0.0.1'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'db_console'
-
-
-#google Login 
-app.config['SECRET_KEY'] = "THIS SHOULD BE SECRET"
-app.config['GOOGLE_CLIENT_ID'] = "642500080555-7aaod8odtsdktfu7dusperbktfu0slc6.apps.googleusercontent.com"
-app.config['GOOGLE_CLIENT_SECRET'] = "TsUtxn9Y-dqW1M_K6zGjdYR1"
-
-
-
-google = oauth.register(
-    name = 'google',
-    client_id = app.config["GOOGLE_CLIENT_ID"],
-    client_secret = app.config["GOOGLE_CLIENT_SECRET"],
-    access_token_url = 'https://accounts.google.com/o/oauth2/token',
-    access_token_params = None,
-    authorize_url = 'https://accounts.google.com/o/oauth2/auth',
-    authorize_params = None,
-    api_base_url = 'https://www.googleapis.com/oauth2/v1/',
-    userinfo_endpoint = 'https://openidconnect.googleapis.com/v1/userinfo',  # This is only needed if using openId to fetch user info
-    client_kwargs = {'scope': 'openid email profile'},
-)
-
-
-
-# Add your own details
-config = {
-    "apiKey": "AIzaSyDCL31T4QStQlXNtxBF7GHpZqljSRh_h-M",
-    "authDomain": "db-console.firebaseapp.com",
-    "databaseURL": "https://db-console-default-rtdb.firebaseio.com",
-    "projectId": "db-console",
-    "storageBucket": "db-console.appspot.com",
-    "messagingSenderId": "91281671272",
-    "appId": "1:91281671272:web:f97ee0cd7f4ecc508ce7dd"
-}
-
-
-
-
-
-
-# initialize firebase
-firebase = pyrebase.initialize_app(config)
-auth = firebase.auth()
-db = firebase.database()
-
-# Initialze person as dictionary
-person = {"is_logged_in": False, "name": "", "email": "", "uid": "" , "contact": "" , "user_type": "" , "rollno": "" , "dept": "","user_id":"" , "user_profile" : ""}
-
-
-# Login
-
-
-@app.route("/")
-def login():
-    #return render_template("Student/student_home.html")
-    if person["is_logged_in"] == True:
-        if(person["user_type"] == 'provider'):
-            return redirect(url_for('welcome'))
-        elif(person["user_type"] == 'student'):
-            return redirect(url_for('home'))
-    else:
-        return render_template("login.html")
-
-
-#Google Login
-
-@app.route('/login/google')
-def google_login():
-    google = oauth.create_client('google')
-    redirect_uri = url_for('google_authorize', _external=True)
-    return google.authorize_redirect(redirect_uri)
-
-
-@app.route('/login/google/authorize')
-def google_authorize():
-    google = oauth.create_client('google')
-    token = google.authorize_access_token()
-    resp = google.get('userinfo').json()
-    email=resp["email"]
-    name=resp["given_name"]
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT * FROM user where email_id=%s LIMIT 1',[email])
-    student = cursor.fetchone()
-    print(student)
-    if(student):
-        global person
-        person["is_logged_in"] = True
-        person["email"] = resp["email"]
-        person["name"] = student['name']
-        person["user_type"] = 'student'
-        person["dept"] = student['department']
-
-        person["rollno"] = student['rollno']
-        person["user_id"] = student['user_id']
-
-        person["contact"] = student['mobile']
-
-        person["user_profile"] = resp["picture"]
-            
-        #return redirect(url_for('login'))
-        return redirect(url_for('home'))
-
-    else:
-        text = resp["email"]
-        result = re.split(r"\.", text)
-        a=result[1][:2]
-        if(a=="cs"):
-            a="COMPUTER SCIENCE AND ENGINEERING"
-        if(a=="ct"):
-             a="COMPUTER TECHNOLOGY"
-        print((result[1][:2]))
-        return render_template("Student/student_register.html",student=resp,a=a)
-
-
-    # return render_template('edit.html',resp=resp,a=a)
-    return redirect(url_for('login'))
-
-
-
-
-
-
-
-#Student Register
+from app import  *
 
 
 @app.route("/student/registe", methods=["POST", "GET"])
@@ -168,9 +28,6 @@ def registe():
         return redirect(url_for('login'))
 
    
-@app.route("/home")
-def home():
-        return render_template("Student/student_home.html",stu=person)
 
 
 
@@ -221,6 +78,7 @@ def result():
       
         except:
             print("logout")
+            person["user_type"]=''
             # If there is any error, redirect back to login
             return redirect(url_for('login'))
     else:
@@ -357,6 +215,20 @@ def register():
 
 
 ###### Student Login  #########
+
+
+
+
+@app.route("/home")
+def home():
+    if person["is_logged_in"] == True and person["user_type"] == 'student':
+        return render_template("Student/student_home.html",user=person)
+
+    else:
+        return redirect(url_for('login'))
+
+
+
 
 @app.route("/profile", methods=["POST", "GET"])
 def student_profile():
