@@ -39,14 +39,12 @@ def google_authorize():
         person["name"] = student['name']
         person["user_type"] = 'student'
         person["dept"] = student['department']
-
         person["rollno"] = student['rollno']
         person["user_id"] = student['user_id']
-
         person["contact"] = student['mobile']
-
         person["user_profile"] = resp["picture"]
-            
+        #flash("Password length must be at least 10 characters")
+        #return redirect(url_for('login'))    
         #return redirect(url_for('login'))
         return redirect(url_for('home'))
 
@@ -65,6 +63,48 @@ def google_authorize():
     # return render_template('edit.html',resp=resp,a=a)
     return redirect(url_for('login'))
 
+@app.route("/logout")
+def logout():
+    person["is_logged_in"] = False
+    person["user_type"] = ''
+
+    return redirect(url_for('login'))
 
 
+@app.route("/result", methods=["POST", "GET"])
+def result():
+    if request.method == "POST":  # Only if data has been posted
+        result = request.form  # Get the data
+        email = result["email"]
+        password = result["pass"]
+        try:
+            # Try signing in the user with the given information
+            user = auth.sign_in_with_email_and_password(email, password)
+            # Insert the user data in the global person
+            
+            global person
+            person["is_logged_in"] = True
+            person["email"] = user["email"]
+            person["uid"] = user["localId"]
+            
+            # Get the name of the user
+            data = db.child("users").get()
+            person["name"] = data.val()[person["uid"]]["name"]
+            person["contact"] = data.val()[person["uid"]]["contact"]
+            person["user_type"] = data.val()[person["uid"]]["user_type"]
 
+            if(person["user_type"] == 'provider'):
+                return redirect(url_for('provider_home'))
+            else:
+                return Response("<h1> Admin</h1>")
+      
+        except:
+            print("logout")
+            person["user_type"]=''
+            # If there is any error, redirect back to login
+            return redirect(url_for('login'))
+    else:
+        if person["is_logged_in"] == True and person["user_type"] == 'provider':
+            return redirect(url_for('welcome'))
+        else:
+            return redirect(url_for('login'))
