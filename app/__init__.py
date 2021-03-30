@@ -21,7 +21,7 @@ app.config['MYSQL_DB'] = 'db_console'
 
 
 #google Login 
-app.config['SECRET_KEY'] = "THIS SHOULD BE SECRET"
+app.config['SECRET_KEY'] = "7VwoqYbf3cVOiHu_wWtb_A"
 app.config['GOOGLE_CLIENT_ID'] = "642500080555-7aaod8odtsdktfu7dusperbktfu0slc6.apps.googleusercontent.com"
 app.config['GOOGLE_CLIENT_SECRET'] = "TsUtxn9Y-dqW1M_K6zGjdYR1"
 

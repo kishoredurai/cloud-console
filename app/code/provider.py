@@ -3,7 +3,7 @@ from app import  *
 
 @app.route("/provider/profile")
 def profile():
-    if person["is_logged_in"] == True and person["user_type"] == 'provider':
+    if not session.get("USERNAME") is None and session["user_type"]=='provider':
 
        return render_template("provider/provider_profile.html", email=person["email"], name=person["name"],contact=person["contact"])
 
@@ -15,7 +15,8 @@ def profile():
 
 @app.route("/provider/home")
 def provider_home():
-    if person["is_logged_in"] == True and person["user_type"]=='provider':
+    if not session.get("USERNAME") is None and session["user_type"]=='provider':
+
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         account=cursor.execute('SELECT COUNT(*) FROM database_users')
         print(account)
@@ -61,7 +62,7 @@ def provider_update():
 
 @app.route("/provider/database")
 def database():
-    if person["is_logged_in"] == True and person["user_type"] == 'provider':
+    if not session.get("USERNAME") is None and session["user_type"]=='provider':
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM database_users,user where database_users.user_id = user.user_id')
         account = cursor.fetchall()

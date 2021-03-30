@@ -66,7 +66,10 @@ def google_authorize():
 @app.route("/logout")
 def logout():
     person["is_logged_in"] = False
-    person["user_type"] = ''
+    session.pop("USERNAME", None)
+    session.pop("user_type", None)
+
+    # person["user_type"] = ''
 
     return redirect(url_for('login'))
 
@@ -77,34 +80,34 @@ def result():
         result = request.form  # Get the data
         email = result["email"]
         password = result["pass"]
-        try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM admin where admin_username=%s and admin_password=%s LIMIT 1',[email,password])
+        student = cursor.fetchone()
+        if(student):
             # Try signing in the user with the given information
-            user = auth.sign_in_with_email_and_password(email, password)
+            #user = auth.sign_in_with_email_and_password(email, password)
             # Insert the user data in the global person
             
             global person
-            person["is_logged_in"] = True
-            person["email"] = user["email"]
-            person["uid"] = user["localId"]
-            
-            # Get the name of the user
-            data = db.child("users").get()
-            person["name"] = data.val()[person["uid"]]["name"]
-            person["contact"] = data.val()[person["uid"]]["contact"]
-            person["user_type"] = data.val()[person["uid"]]["user_type"]
-
+            session["USERNAME"] = student["admin_username"]
+            session["user_type"] = student["admin_user_type"]
+            person["email"] = student["admin_username"]
+            person["name"] = student['admin_name']
+            person["user_type"] = student['admin_user_type']
+            person["user_id"] = student['admin_id']
             if(person["user_type"] == 'provider'):
                 return redirect(url_for('provider_home'))
+            elif(person["user_type"] == 'admin'):
+                return redirect(url_for('login'))
             else:
                 return Response("<h1> Admin</h1>")
       
-        except:
-            print("logout")
-            person["user_type"]=''
+        else:
+      
             # If there is any error, redirect back to login
             return redirect(url_for('login'))
     else:
-        if person["is_logged_in"] == True and person["user_type"] == 'provider':
-            return redirect(url_for('welcome'))
+        if not session.get("USERNAME") is None and session["user_type"]=='provider':
+            return redirect(url_for('provider_home'))
         else:
             return redirect(url_for('login'))
