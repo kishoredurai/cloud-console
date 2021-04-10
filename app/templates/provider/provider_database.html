@@ -42,9 +42,8 @@
                        {% if row.start_date != "" %}<td>{{row.start_date}}</td>{% endif %}
                        <td>{{row.end_date}}</td>
                        <td>{{row.db_status}}</td>
-                       <td>{% if row.db_status != "Active" and  row.Request_status  != "Accepted" %}
-                           <button type="submit" name="submit_a" value="{{row.db_id}}">Reject</button>
-                       <button type="submit" name="submit_b" value="{{row.db_id}}">Approve</button></td>
+                       <td>{% if row.db_status != "Active" and  row.Request_status  != "Approved" %}
+                           <button type="submit" name="submit_a" value="{{row.db_id}}">Update</button> 
                        {% endif %}
                    </tr>
                {% endfor %}

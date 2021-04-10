@@ -2,20 +2,18 @@ from app import  *
 
 @app.route("/home")
 def home():
-    if person["is_logged_in"] == True and person["user_type"] == 'student':
+    if not session.get("id") is None and person["user_type"] == 'student':
+
         return render_template("Student/student_home.html",user=person)
 
     else:
         return redirect(url_for('login'))
 
 
-
-
 @app.route("/profile", methods=["POST", "GET"])
 def student_profile():
-
-    if person["is_logged_in"] == True and person["user_type"] == 'student':
-        
+    if not session.get("id") is None and person["user_type"] == 'student':
+               
         if request.method == "POST":
             if request.form.get("update"):
                 result = request.form  # Get the data
@@ -35,7 +33,8 @@ def student_profile():
 
 @app.route("/student_database")
 def student_database():
-    if person["is_logged_in"] == True and person["user_type"] == 'student':
+    if not session.get("id") is None and person["user_type"] == 'student':
+        
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         
         cursor.execute('SELECT * FROM database_users where user_id = %s',[person['user_id']])

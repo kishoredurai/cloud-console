@@ -6,7 +6,6 @@ import pyrebase
 import flash
 
 
-
 import MySQLdb.cursors
 
 app = Flask(__name__)  # Initialze flask constructor

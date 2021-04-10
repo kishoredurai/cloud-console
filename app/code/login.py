@@ -3,17 +3,19 @@ from app import  *
 @app.route("/")
 def login():
     #return render_template("Student/student_home.html")
-    if person["is_logged_in"] == True:
-        if(person["user_type"] == 'provider'):
-            return redirect(url_for('welcome'))
-        elif(person["user_type"] == 'student'):
+    if(not session.get("id") is None):
+        if(person["user_type"] == 'student'):
             return redirect(url_for('home'))
+        elif(person["user_type"] == 'provider'):
+            return redirect(url_for('provider_home'))
+        else:
+            session.pop("id", None)
+            return redirect(url_for('login'))
     else:
         return render_template("login.html")
 
 
 #Google Login
-
 @app.route('/login/google')
 def google_login():
     google = oauth.create_client('google')
@@ -34,10 +36,10 @@ def google_authorize():
     print(student)
     if(student):
         global person
-        person["is_logged_in"] = True
+        session["id"] = student['user_id']
+        person["user_type"] = student['user_type']
         person["email"] = resp["email"]
         person["name"] = student['name']
-        person["user_type"] = 'student'
         person["dept"] = student['department']
         person["rollno"] = student['rollno']
         person["user_id"] = student['user_id']
@@ -45,7 +47,7 @@ def google_authorize():
         person["user_profile"] = resp["picture"]
         #flash("Password length must be at least 10 characters")
         #return redirect(url_for('login'))    
-        #return redirect(url_for('login'))
+        #return red irect(url_for('login'))
         return redirect(url_for('home'))
 
     else:
@@ -65,12 +67,8 @@ def google_authorize():
 
 @app.route("/logout")
 def logout():
-    person["is_logged_in"] = False
-    session.pop("USERNAME", None)
-    session.pop("user_type", None)
-
-    # person["user_type"] = ''
-
+    session.pop("id", None)
+    person["user_type"] = ''
     return redirect(url_for('login'))
 
 
@@ -89,8 +87,7 @@ def result():
             # Insert the user data in the global person
             
             global person
-            session["USERNAME"] = student["admin_username"]
-            session["user_type"] = student["admin_user_type"]
+            session["id"] = student['admin_id']
             person["email"] = student["admin_username"]
             person["name"] = student['admin_name']
             person["user_type"] = student['admin_user_type']
@@ -107,7 +104,16 @@ def result():
             # If there is any error, redirect back to login
             return redirect(url_for('login'))
     else:
-        if not session.get("USERNAME") is None and session["user_type"]=='provider':
+        if not session.get("id") is None and person["user_type"] == 'provider':
             return redirect(url_for('provider_home'))
         else:
             return redirect(url_for('login'))
+
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+
+    app.logger.info(f"Page not found: {request.url}")
+
+    return redirect(url_for('login'))
