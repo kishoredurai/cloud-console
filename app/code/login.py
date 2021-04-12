@@ -67,8 +67,8 @@ def google_authorize():
 
 @app.route("/logout")
 def logout():
+    person.clear()
     session.pop("id", None)
-    person["user_type"] = ''
     return redirect(url_for('login'))
 
 
@@ -100,7 +100,7 @@ def result():
                 return Response("<h1> Admin</h1>")
       
         else:
-      
+            flash("Invalid password and Username")  
             # If there is any error, redirect back to login
             return redirect(url_for('login'))
     else:

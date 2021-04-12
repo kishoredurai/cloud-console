@@ -52,9 +52,27 @@ def provider_update():
             cursor.execute('insert into db_approval_status(db_id, admin_id, update_status, provider_remark) values(%s,%s,"Approved",%s)', [ss,id,remark])
             mysql.connection.commit()
             cursor.execute('update database_users set db_status = "Deactive" , Request_status = "Approved" where db_id=%s;', [ss])
-            mysql.connection.commit()            
+            mysql.connection.commit()  
+            cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_id=%s',[ss])
+            data = cursor.fetchone() 
+            today = date.today()
+            if(data["start_date"] <= today):
+                print("created")
+            else:
+                print("not created")                      
             return redirect(url_for('database'))
    
+        if request.form.get("reject"):
+            result = request.form  # Get the data
+            ss = result["reject"]
+            id=session.get("id")
+            remark = result["provider_remark"]
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('insert into db_approval_status(db_id, admin_id, update_status, provider_remark) values(%s,%s,"Rejected",%s)', [ss,id,remark])
+            mysql.connection.commit()
+            cursor.execute('update database_users set db_status = "Deactive" , Request_status = "Rejected" where db_id=%s;', [ss])
+            mysql.connection.commit()            
+            return redirect(url_for('database'))
 
 
         
