@@ -1,4 +1,4 @@
-from app import  *
+from app import *
 
 @app.route("/")
 def login():
@@ -13,6 +13,7 @@ def login():
             return redirect(url_for('login'))
     else:
         return render_template("login.html")
+
 
 
 #Google Login
@@ -82,10 +83,13 @@ def result():
         cursor.execute('SELECT * FROM admin where admin_username=%s and admin_password=%s LIMIT 1',[email,password])
         student = cursor.fetchone()
         if(student):
+
             # Try signing in the user with the given information
             #user = auth.sign_in_with_email_and_password(email, password)
             # Insert the user data in the global person
             
+            
+
             global person
             session["id"] = student['admin_id']
             person["email"] = student["admin_username"]
@@ -117,3 +121,4 @@ def page_not_found(e):
     app.logger.info(f"Page not found: {request.url}")
 
     return redirect(url_for('login'))
+

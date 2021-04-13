@@ -63,4 +63,4 @@ db = firebase.database()
 person = {"is_logged_in": False, "name": "", "email": "", "uid": "" , "contact": "" , "user_type": "" , "rollno": "" , "dept": "","user_id":"" , "user_profile" : ""}
 
 
-from app.code import login,codes,user,provider
+from app.code import login,codes,user,provider,method

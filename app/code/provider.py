@@ -4,29 +4,23 @@ from app import  *
 @app.route("/provider/profile")
 def profile():
     if not session.get("id") is None and person["user_type"] == 'provider':
-
-       return render_template("provider/provider_profile.html", email=person["email"], name=person["name"],contact=person["contact"])
+        return render_template("provider/provider_profile.html", email=person["email"], name=person["name"],contact=person["contact"])
 
     else:
         return redirect(url_for('login'))
-
 
 
 @app.route("/provider/home")
 def provider_home():
     if not session.get("id") is None and person["user_type"] == 'provider':
-
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         account=cursor.execute('SELECT COUNT(*) FROM database_users')
-        print(account)
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         sas=cursor.execute('SELECT COUNT(*) FROM database_users where db_status="Active"')
-        print(sas)
         return render_template("provider/provider_home.html", email=person["email"], name=person["name"],data=account,ac=sas)
 
     else:
         return redirect(url_for('login'))
-
 
 
 
@@ -49,17 +43,9 @@ def provider_update():
             id=session.get("id")
             remark = result["provider_remark"]
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            db_create_check(ss)
             cursor.execute('insert into db_approval_status(db_id, admin_id, update_status, provider_remark) values(%s,%s,"Approved",%s)', [ss,id,remark])
             mysql.connection.commit()
-            cursor.execute('update database_users set db_status = "Deactive" , Request_status = "Approved" where db_id=%s;', [ss])
-            mysql.connection.commit()  
-            cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_id=%s',[ss])
-            data = cursor.fetchone() 
-            today = date.today()
-            if(data["start_date"] <= today):
-                print("created")
-            else:
-                print("not created")                      
             return redirect(url_for('database'))
    
         if request.form.get("reject"):
@@ -87,5 +73,57 @@ def database():
 
     else:
         return redirect(url_for('login'))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def db_create_check(db_id):
+    print(db_id)
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)    
+    cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_id=%s',[db_id])
+    data = cursor.fetchone() 
+    cursor.execute('SELECT * FROM mysql.user where user=%s',[data['rollno']])
+    datas = cursor.fetchall()
+    if not datas:
+        try:
+            sqlCreateUser = "CREATE USER '%s'@'localhost' IDENTIFIED BY '%s';"%(data['rollno'],data['db_password'])
+            cursor.execute(sqlCreateUser)
+        except Exception as Ex:
+            print("Error creating MySQL User: %s"%(Ex))    
+     
+    today = date.today()
+    if(data["start_date"] <= today):
+        print("created")
+        try:
+            sqlCreateUser = "CREATE DATABASE %s;"%(data['db_name'])
+            cursor.execute(sqlCreateUser)
+        except Exception as Ex:
+            print("Error creating MySQL User: %s"%(Ex))
+        try:
+            sqlCreateUser = "CREATE DATABASE %s;"%(data['db_name'])
+            cursor.execute(sqlCreateUser)
+        except Exception as Ex:
+            print("Error creating MySQL User: %s"%(Ex))
+        cursor.execute('update database_users set db_status = "Active" , Request_status = "Approved" where db_id=%s;', [db_id])
+        mysql.connection.commit()  
+    else:
+        print("not created")  
+        cursor.execute('update database_users set db_status = "Deactive" , Request_status = "Approved" where db_id=%s;', [db_id])
+        mysql.connection.commit() 
+    
+
 
 
