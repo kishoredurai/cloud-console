@@ -1,21 +1,18 @@
 from app import *
 
-def db_create_check(id):
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_id=%s',[id])
-    data = cursor.fetchone() 
-    cursor.execute('create database %s', [data["db_name"]])
-    mysql.connection.commit()  
-    today = date.today()
-    if(data["start_date"] <= today):
-        print("created")
-        cursor.execute('update database_users set db_status = "Active" , Request_status = "Approved" where db_id=%s;', [id])
-        mysql.connection.commit()  
-    else:
-        print("not created")  
-        cursor.execute('update database_users set db_status = "Deactive" , Request_status = "Approved" where db_id=%s;', [id])
-        mysql.connection.commit() 
-    
 
+@app.route("/")
+def login():
+    #return render_template("Student/student_home.html")
+    if(not session.get("id") is None):
+        if(person["user_type"] == 'student'):
+            return redirect(url_for('home'))
+        elif(person["user_type"] == 'provider'):
+            return redirect(url_for('provider_home'))
+        else:
+            session.pop("id", None)
+            return redirect(url_for('login'))
+    else:
+        return render_template("login.html")
 
 

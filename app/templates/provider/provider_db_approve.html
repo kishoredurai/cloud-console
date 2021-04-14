@@ -1,8 +1,11 @@
+
+{% include 'headers/provider_header.html' %}
+
 <!DOCTYPE html>
 <html>
 
 <head>
-    <title>database registration form</title>
+    <title>database Details</title>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600' rel='stylesheet'
         type='text/css'>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
@@ -184,7 +187,7 @@
 
 <body>
     <div class="main-block">
-        <form action="/provider/database/update" method="POST">
+        <form action="/provider/database/details" method="POST">
             <h1>Register DB console</h1>
             <fieldset>
                 <legend>
@@ -247,6 +250,7 @@
     
 
     </fieldset>
+    {% if  data.Request_status  != "Approved" and  data.Request_status  != "Rejected" %}
     <fieldset>
         <legend>
             <h3>Terms and Mailing</h3>
@@ -261,9 +265,12 @@
                     site</span>
             </div>
     </fieldset>
+    
+
     <button type="submit" name="approve" value={{data.db_id}}>Approve</button>
     <button type="submit" name="reject" value={{data.db_id}}>Reject</button>
-
+    {% endif %}
+    <a type="button" class="btn btn-primary" href="/provider/database">BACK</a>
     </form>
     </div>
 </body>

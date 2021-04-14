@@ -1,18 +1,5 @@
 from app import *
 
-@app.route("/")
-def login():
-    #return render_template("Student/student_home.html")
-    if(not session.get("id") is None):
-        if(person["user_type"] == 'student'):
-            return redirect(url_for('home'))
-        elif(person["user_type"] == 'provider'):
-            return redirect(url_for('provider_home'))
-        else:
-            session.pop("id", None)
-            return redirect(url_for('login'))
-    else:
-        return render_template("login.html")
 
 
 
@@ -82,14 +69,8 @@ def result():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM admin where admin_username=%s and admin_password=%s LIMIT 1',[email,password])
         student = cursor.fetchone()
-        if(student):
-
-            # Try signing in the user with the given information
-            #user = auth.sign_in_with_email_and_password(email, password)
-            # Insert the user data in the global person
-            
-            
-
+        if(student):    
+           
             global person
             session["id"] = student['admin_id']
             person["email"] = student["admin_username"]

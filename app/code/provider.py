@@ -24,41 +24,42 @@ def provider_home():
 
 
 
-@app.route("/provider/database/update", methods=["POST", "GET"])
-def provider_update():
+@app.route("/provider/database/details", methods=["POST", "GET"])
+def provider_database_details():
+    if not session.get("id") is None and person["user_type"] == 'provider':
+                
+        if request.method == "POST":
+            if request.form.get("submit_a"):
+                result = request.form  # Get the data
+                ss = result["submit_a"]
+                cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+                cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_id=%s',[ss])
+                data = cursor.fetchone()  
+                return render_template("provider/provider_db_approve.html",email=person["email"], name=person["name"],data=data)
+
+
+            if request.form.get("approve"):
+                result = request.form  # Get the data
+                ss = result["approve"]
+                id=session.get("id")
+                remark = result["provider_remark"]
+                cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+                db_create_check(ss)
+                cursor.execute('insert into db_approval_status(db_id, admin_id, update_status, provider_remark) values(%s,%s,"Approved",%s)', [ss,id,remark])
+                mysql.connection.commit()
+                return redirect(url_for('database'))
     
-    if request.method == "POST":
-        if request.form.get("submit_a"):
-            result = request.form  # Get the data
-            ss = result["submit_a"]
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_id=%s',[ss])
-            data = cursor.fetchone()  
-            return render_template("provider/provider_db_approve.html",email=person["email"], name=person["name"],data=data)
-
-
-        if request.form.get("approve"):
-            result = request.form  # Get the data
-            ss = result["approve"]
-            id=session.get("id")
-            remark = result["provider_remark"]
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            db_create_check(ss)
-            cursor.execute('insert into db_approval_status(db_id, admin_id, update_status, provider_remark) values(%s,%s,"Approved",%s)', [ss,id,remark])
-            mysql.connection.commit()
-            return redirect(url_for('database'))
-   
-        if request.form.get("reject"):
-            result = request.form  # Get the data
-            ss = result["reject"]
-            id=session.get("id")
-            remark = result["provider_remark"]
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('insert into db_approval_status(db_id, admin_id, update_status, provider_remark) values(%s,%s,"Rejected",%s)', [ss,id,remark])
-            mysql.connection.commit()
-            cursor.execute('update database_users set db_status = "Deactive" , Request_status = "Rejected" where db_id=%s;', [ss])
-            mysql.connection.commit()            
-            return redirect(url_for('database'))
+            if request.form.get("reject"):
+                result = request.form  # Get the data
+                ss = result["reject"]
+                id=session.get("id")
+                remark = result["provider_remark"]
+                cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+                cursor.execute('insert into db_approval_status(db_id, admin_id, update_status, provider_remark) values(%s,%s,"Rejected",%s)', [ss,id,remark])
+                mysql.connection.commit()
+                cursor.execute('update database_users set db_status = "Deactive" , Request_status = "Rejected" where db_id=%s;', [ss])
+                mysql.connection.commit()            
+                return redirect(url_for('database'))
 
 
         
@@ -75,6 +76,8 @@ def database():
         return redirect(url_for('login'))
 
 
+
+   
 
 
 
@@ -106,17 +109,9 @@ def db_create_check(db_id):
      
     today = date.today()
     if(data["start_date"] <= today):
+
         print("created")
-        try:
-            sqlCreateUser = "CREATE DATABASE %s;"%(data['db_name'])
-            cursor.execute(sqlCreateUser)
-        except Exception as Ex:
-            print("Error creating MySQL User: %s"%(Ex))
-        try:
-            sqlCreateUser = "CREATE DATABASE %s;"%(data['db_name'])
-            cursor.execute(sqlCreateUser)
-        except Exception as Ex:
-            print("Error creating MySQL User: %s"%(Ex))
+        db_create(data)
         cursor.execute('update database_users set db_status = "Active" , Request_status = "Approved" where db_id=%s;', [db_id])
         mysql.connection.commit()  
     else:
@@ -127,3 +122,17 @@ def db_create_check(db_id):
 
 
 
+def db_create(data):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)    
+    try:
+        sqlCreateUser = "CREATE DATABASE %s;"%(data['db_name'])
+        cursor.execute(sqlCreateUser)
+        print('db created')
+    except Exception as Ex:
+        print("Error creating MySQL User: %s"%(Ex))
+    try:
+        sqlCreateUser = "GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' IDENTIFIED BY '%s';"%(data['db_name'],data['rollno'],data['db_password'])
+        cursor.execute(sqlCreateUser)
+        print('grant privileges')
+    except Exception as Ex:
+        print("Error creating MySQL User: %s"%(Ex))

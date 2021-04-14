@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-   
+
     <title>Welcome</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 
@@ -17,39 +17,41 @@
 </head>
 
 <body>
-   
-    <form method ="post" action="/provider/database/update">
 
-    <table class="table">
-        <thead>
-            <th>Applied Date</th>
-            <th>Database</th>
-            <th>User Type</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Database status</th>
-            <th>Action</th>
+    <form method="post" action="/provider/database/details">
 
-        </thead>
-        <tbody>
+        <table class="table">
+            <thead>
+                <th>Applied Date</th>
+                <th>Database</th>
+                <th>User Type</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Database status</th>
+                <th>Request status</th>
 
-            {% for row in value %}    
-                   <tr>
-                       <td>{{row.applied_date}}</td>
-                       <td>{{row.db_software}}</td>
-                       <td>{{row.user_type}}</td>
-                       {% if row.start_date == "NULL" %}<td>Not Approved </td>{% endif %}
-                       {% if row.start_date != "" %}<td>{{row.start_date}}</td>{% endif %}
-                       <td>{{row.end_date}}</td>
-                       <td>{{row.db_status}}</td>
-                       <td>{% if row.db_status != "Active" and  row.Request_status  != "Approved" %}
-                           <button type="submit" name="submit_a" value="{{row.db_id}}">Update</button> 
-                       {% endif %}
-                   </tr>
-               {% endfor %}
-           </tbody>
-    </table>
-</form> 
+                <th>Action</th>
+
+            </thead>
+            <tbody>
+
+                {% for row in value %}
+                <tr>
+                    <td>{{row.applied_date}}</td>
+                    <td>{{row.db_software}}</td>
+                    <td>{{row.user_type}}</td>
+                    {% if row.start_date == "NULL" %}<td>Not Approved </td>{% endif %}
+                    {% if row.start_date != "" %}<td>{{row.start_date}}</td>{% endif %}
+                    <td>{{row.end_date}}</td>
+                    <td>{{row.db_status}}</td>
+                    <td>{{row.Request_status}}</td>
+
+                    <td><button type="submit" name="submit_a" value="{{row.db_id}}">View Details</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
 
 </body>
 
