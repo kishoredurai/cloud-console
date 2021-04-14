@@ -76,6 +76,17 @@ def database():
         return redirect(url_for('login'))
 
 
+@app.route("/provider/student_details")
+def provider_student_details():
+    if not session.get("id") is None and person["user_type"] == 'provider':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM user ')
+        account = cursor.fetchall()
+        return render_template("provider/provider_student.html", email=person["email"], name=person["name"], value=account)
+
+    else:
+        return redirect(url_for('login'))
+
 
    
 
