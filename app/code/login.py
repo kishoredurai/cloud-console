@@ -1,6 +1,19 @@
 from app import *
 
 
+@app.route("/")
+def login():
+    #return render_template("Student/student_home.html")
+    if(not session.get("id") is None):
+        if(person["user_type"] == 'student'):
+            return redirect(url_for('home'))
+        elif(person["user_type"] == 'provider'):
+            return redirect(url_for('provider_home'))
+        else:
+            session.pop("id", None)
+            return redirect(url_for('login'))
+    else:
+        return render_template("login.html")
 
 
 #Google Login
@@ -17,12 +30,14 @@ def google_authorize():
     token = google.authorize_access_token()
     resp = google.get('userinfo').json()
     email=resp["email"]
+    
     name=resp["given_name"]
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM user where email_id=%s LIMIT 1',[email])
     student = cursor.fetchone()
     print(student)
     if(student):
+       
         global person
         session["id"] = student['user_id']
         person["user_type"] = student['user_type']
@@ -70,7 +85,6 @@ def result():
         cursor.execute('SELECT * FROM admin where admin_username=%s and admin_password=%s LIMIT 1',[email,password])
         student = cursor.fetchone()
         if(student):    
-           
             global person
             session["id"] = student['admin_id']
             person["email"] = student["admin_username"]
@@ -102,4 +116,5 @@ def page_not_found(e):
     app.logger.info(f"Page not found: {request.url}")
 
     return redirect(url_for('login'))
+
 

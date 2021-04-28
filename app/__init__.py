@@ -2,10 +2,13 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 from flask_mysqldb import MySQL
 from datetime import date
 
+from apscheduler.schedulers.background import BackgroundScheduler
+
 from authlib.integrations.flask_client import OAuth
 import re
 import pyrebase
-
+import schedule
+import time,atexit
 
 import MySQLdb.cursors
 
@@ -59,8 +62,78 @@ firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 db = firebase.database()
 
+
+
+    
 # Initialze person as dictionary
 person = {"is_logged_in": False, "name": "", "email": "", "uid": "" , "contact": "" , "user_type": "" , "rollno": "" , "dept": "","user_id":"" , "user_profile" : ""}
 
 
-from app.code import login,codes,user,provider,method
+
+
+
+
+###################### db create funciton ##############################
+
+def SQL_privilleges(data):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)    
+    try:
+        sqlCreateUser = "GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' IDENTIFIED BY '%s';"%(data['db_name'],data['rollno'],data['db_password'])
+        cursor.execute(sqlCreateUser)
+        print('grant privileges')
+    except Exception as Ex:
+        print("Error creating MySQL User: %s"%(Ex))
+
+
+
+
+
+
+
+
+
+################################ timer ##############
+
+
+def database_check():
+    db = MySQLdb.connect("127.0.0.1","root","","db_console" )
+    cursor = db.cursor()
+    print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
+    today = date.today()
+    print(today)
+    cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_status="Deactive" and database_users.Request_status = "Approved" and start_date = %s',[today])
+    data = cursor.fetchall() 
+    if data :
+
+        try:
+            sqlCreateUser = "GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' IDENTIFIED BY '%s';"%(data['db_name'],data['rollno'],data['db_password'])
+            cursor.execute(sqlCreateUser)
+            print('grant privileges')
+        except Exception as Ex:
+            print("Error creating MySQL User: %s"%(Ex))
+
+        cursor.execute('update database_users set db_status = "Active" , Request_status = "Approved" where db_id=%s;', [data['db_id']])
+        mysql.connection.commit()  
+
+def provider_email():
+    print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=database_check, trigger="interval", seconds=12)
+scheduler.start()
+
+atexit.register(lambda: scheduler.shutdown())
+
+
+
+#### default function ###########
+
+def email():
+    print('testing')
+
+
+
+
+
+
+from app.code import login,codes,user,provider

@@ -105,7 +105,6 @@ def provider_student_details():
 
 
 def db_create_check(db_id):
-    print(db_id)
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)    
     cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_id=%s',[db_id])
     data = cursor.fetchone() 
@@ -116,34 +115,34 @@ def db_create_check(db_id):
             sqlCreateUser = "CREATE USER '%s'@'localhost' IDENTIFIED BY '%s';"%(data['rollno'],data['db_password'])
             cursor.execute(sqlCreateUser)
         except Exception as Ex:
-            print("Error creating MySQL User: %s"%(Ex))    
-     
-    today = date.today()
-    if(data["start_date"] <= today):
+            print("Error creating MySQL User: %s"%(Ex))   
 
-        print("created")
-        db_create(data)
-        cursor.execute('update database_users set db_status = "Active" , Request_status = "Approved" where db_id=%s;', [db_id])
-        mysql.connection.commit()  
-    else:
-        print("not created")  
-        cursor.execute('update database_users set db_status = "Deactive" , Request_status = "Approved" where db_id=%s;', [db_id])
-        mysql.connection.commit() 
-    
-
-
-
-def db_create(data):
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)    
+    ## Database create ##
     try:
         sqlCreateUser = "CREATE DATABASE %s;"%(data['db_name'])
         cursor.execute(sqlCreateUser)
         print('db created')
     except Exception as Ex:
         print("Error creating MySQL User: %s"%(Ex))
-    try:
-        sqlCreateUser = "GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' IDENTIFIED BY '%s';"%(data['db_name'],data['rollno'],data['db_password'])
-        cursor.execute(sqlCreateUser)
-        print('grant privileges')
-    except Exception as Ex:
-        print("Error creating MySQL User: %s"%(Ex))
+    
+
+
+    ## check database create date
+
+    today = date.today()
+    if(data["start_date"] <= today):
+
+        print("created")
+        SQL_privilleges(data)
+        cursor.execute('update database_users set db_status = "Active" , Request_status = "Approved" where db_id=%s;', [db_id])
+        mysql.connection.commit()  
+    else:
+        print("not created") 
+        cursor.execute('update database_users set db_status = "Deactive" , Request_status = "Approved" where db_id=%s;', [db_id])
+        mysql.connection.commit() 
+    
+
+
+
+
+
