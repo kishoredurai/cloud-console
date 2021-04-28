@@ -96,30 +96,33 @@ def SQL_privilleges(data):
 
 
 def database_check():
-    db = MySQLdb.connect("127.0.0.1","root","","db_console" )
+    db = MySQLdb.connect("127.0.0.1","root","","db_console",cursorclass=MySQLdb.cursors.DictCursor)
     cursor = db.cursor()
-    print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
+    
     today = date.today()
     print(today)
-    cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_status="Deactive" and database_users.Request_status = "Approved" and start_date = %s',[today])
+    cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_status="Deactive" and database_users.Request_status = "Approved" and start_date = %s',[today,])
     data = cursor.fetchall() 
     if data :
+        for x in range(len(data)):
 
-        try:
-            sqlCreateUser = "GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' IDENTIFIED BY '%s';"%(data['db_name'],data['rollno'],data['db_password'])
-            cursor.execute(sqlCreateUser)
-            print('grant privileges')
-        except Exception as Ex:
-            print("Error creating MySQL User: %s"%(Ex))
+            name=data[x]['db_name']              
+            try:
+                sqlCreateUser = "GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' IDENTIFIED BY '%s';"%(data[x]['db_name'],data[x]['rollno'],data[x]['db_password'])
+                cursor.execute(sqlCreateUser)
+                print('approved')
+            except Exception as Ex:
+                print("Error creating MySQL User: %s"%(Ex))
 
-        cursor.execute('update database_users set db_status = "Active" , Request_status = "Approved" where db_id=%s;', [data['db_id']])
-        mysql.connection.commit()  
-
+            cursor.execute('update database_users set db_status = "Active"  where db_id=%s;', [data[x]['db_id']])
+            db.commit()
+    else:
+        print('no details')
 def provider_email():
     print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=database_check, trigger="interval", seconds=12)
+scheduler.add_job(func=database_check, trigger="interval", hours=4)
 scheduler.start()
 
 atexit.register(lambda: scheduler.shutdown())
