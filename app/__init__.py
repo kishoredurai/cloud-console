@@ -1,7 +1,6 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, url_for,Response    
 from flask_mysqldb import MySQL
 from datetime import date
-
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from authlib.integrations.flask_client import OAuth
@@ -11,6 +10,21 @@ import schedule
 import time,atexit
 
 import MySQLdb.cursors
+
+## mail sender
+import smtplib, ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+
+
+
+
+
+
+
+
+
 
 app = Flask(__name__)  # Initialze flask constructor
 mysql = MySQL(app)
@@ -92,6 +106,46 @@ def SQL_privilleges(data):
 
 
 
+#### default function ###########
+
+def email(send,messages):
+
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "multipart test"
+    message["From"] = 'cloud@bitsathy.ac.in'
+    message["To"] = send
+
+    html = """\
+    <html>
+    <body>
+        <p>Hi,<br>
+        How are you?<br>
+        <a href="http://www.realpython.com">Real Python</a> 
+        has many great tutorials.
+        </p>
+    </body>
+    </html>
+    """
+
+   
+    part2 = MIMEText(html, "html")
+
+    # message.attach(part1)
+    message.attach(part2)
+
+    # Create secure connection with server and send email
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+        server.login('cloud@bitsathy.ac.in', 'Cloud@987')
+        server.sendmail(
+            'cloud@bitsathy.ac.in', send, message.as_string()
+        )
+    print('mail sent')
+   
+
+
+
+
 ################################ timer ##############
 
 
@@ -118,21 +172,21 @@ def database_check():
             db.commit()
     else:
         print('no details')
+
+
+
 def provider_email():
-    print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
+    email('kishore.ct19@bitsathy.ac.in','this test mail')
+
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=database_check, trigger="interval", hours=4)
+scheduler.add_job(func=provider_email, trigger="interval", seconds=2)
 scheduler.start()
 
 atexit.register(lambda: scheduler.shutdown())
 
 
 
-#### default function ###########
-
-def email():
-    print('testing')
 
 
 
