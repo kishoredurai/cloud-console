@@ -4,7 +4,16 @@
 <html>
 
 <body>
-    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <script>
+          swal("{{message}}", "Keep Password Safe!", "{{category}}");
+        </script>
+        {% endfor %}
+    {% endif %}
+  {% endwith %}
+  
     <img src="{{user.user_profile}}"/>
 
    <h1> Name  {{user.name}}</h1>

@@ -19,9 +19,18 @@ def student_profile():
                 result = request.form  # Get the data
                 ss = result["dbpasswd"]
                 cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-                cursor.execute('update user set db_password=%s where user_id=%s;', [ss,person['user_id']])
-                mysql.connection.commit()            
-                return redirect(url_for('profile'))
+                try:
+                    sqlCreateUser = "ALTER USER '%s'@'localhost' IDENTIFIED BY '%s';"%(person['rollno'],ss)
+                    cursor.execute(sqlCreateUser)
+                    cursor.execute('update user set db_password=%s where user_id=%s;', [ss,person['user_id']])
+                    mysql.connection.commit()   
+                    flash("Password Updated Successfully !", "success")        
+                    return redirect(url_for('student_profile'))
+                except Exception as Ex:
+                    print("Error creating MySQL User: %s"%(Ex))
+                    flash("Password Not Updated !", "warning")        
+                    return redirect(url_for('student_profile'))
+                
 
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM user where user_id = %s',[person['user_id']])

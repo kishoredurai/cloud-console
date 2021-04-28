@@ -108,12 +108,12 @@ def SQL_privilleges(data):
 
 #### default function ###########
 
-def email(send,messages):
+def email(sender,messages,subject):
 
     message = MIMEMultipart("alternative")
     message["Subject"] = "multipart test"
     message["From"] = 'cloud@bitsathy.ac.in'
-    message["To"] = send
+    message["To"] = sender
 
     html = """\
     <html>
@@ -138,7 +138,7 @@ def email(send,messages):
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
         server.login('cloud@bitsathy.ac.in', 'Cloud@987')
         server.sendmail(
-            'cloud@bitsathy.ac.in', send, message.as_string()
+            'cloud@bitsathy.ac.in', sender, message.as_string()
         )
     print('mail sent')
    
@@ -152,9 +152,7 @@ def email(send,messages):
 def database_check():
     db = MySQLdb.connect("127.0.0.1","root","","db_console",cursorclass=MySQLdb.cursors.DictCursor)
     cursor = db.cursor()
-    
     today = date.today()
-    print(today)
     cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_status="Deactive" and database_users.Request_status = "Approved" and start_date = %s',[today,])
     data = cursor.fetchall() 
     if data :
@@ -173,16 +171,37 @@ def database_check():
     else:
         print('no details')
 
+    ## revoke permission
+    cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_status="Active" and database_users.Request_status = "Approved" and end_date = %s',[today,])
+    data = cursor.fetchall() 
+    if data :
+        for x in range(len(data)):
+
+            name=data[x]['db_name']              
+            try:
+                sqlCreateUser = "REVOKE ALL PRIVILEGES ON %s.* FROM '%s'@'localhost';"%(data[x]['db_name'],data[x]['rollno'])
+                cursor.execute(sqlCreateUser)
+                
+                print('REVOKED')
+            except Exception as Ex:
+                print("Error creating MySQL User: %s"%(Ex))
+
+            cursor.execute('update database_users set db_status = "Deactive"  where db_id=%s;', [data[x]['db_id']])
+            db.commit()
+    else:
+        print('no details')
+
 
 
 def provider_email():
-    email('kishore.ct19@bitsathy.ac.in','this test mail')
+
+    email('kishore.ct19@bitsathy.ac.in','this test mail','daily status')
 
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=provider_email, trigger="interval", seconds=2)
+scheduler.add_job(func=provider_email, trigger="interval", hours=12)
+scheduler.add_job(func=database_check, trigger="interval", hours=12)
 scheduler.start()
-
 atexit.register(lambda: scheduler.shutdown())
 
 
