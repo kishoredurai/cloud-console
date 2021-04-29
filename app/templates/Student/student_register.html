@@ -6,11 +6,11 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
         integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
-   
+
 </head>
 
 <body>
-    <form action="/student/registe" method="POST">
+    <form action="/student/register" method="POST">
         <h1>SIGN UP</h1>
         <div class="icon">
             <img src="{{student.picture}}" alt="Avatar" style="width:200px">
@@ -21,14 +21,31 @@
                 <input type="text" placeholder="Enter Username" name="name" value="{{student.name}}" >
                 <label for="mail"><strong>E-mail</strong></label>
                 <input type="text" placeholder="Enter E-mail" name="email" value="{{student.email}}" >
+                {% if user == "student" %}
                 <label for="uname"><strong>Rollno</strong></label>
+                {% endif %}
+                {% if user == "staff" %}
+                <label for="uname"><strong>Staff IDs</strong></label>
+                {% endif %}
                 <input type="text" placeholder="Enter Rollno" name="rollno" required>
                 <label for="uname"><strong>Contact</strong></label>
                 <input type="text" placeholder="Enter contact" name="contact" required>
                 <input type="hidden" name="profile" value="{{student.picture}}">
 
                 <label for="psw"><strong>Department</strong></label>
-                <input type="text" placeholder="Enter Department" name="dept" value="{{a}}" >
+                {% if user == "student" %}
+                <input type="text" placeholder="Enter Department" name="dept" value="{{dept}}">
+                {% endif %}
+
+                {% if user == "staff" %}
+
+                <select name="dept">
+                    {% for row in dept %}
+                    <option value="{{row.department_name}}">{{row.department_name}}</option>
+                    {% endfor %}
+                </select>
+
+                {% endif %}
             </div>
             <input type="submit" value="register">
 
@@ -111,4 +128,5 @@
         border-radius: 50%;
     }
 </style>
+
 </html>

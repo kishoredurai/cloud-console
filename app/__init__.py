@@ -22,10 +22,6 @@ from email.mime.multipart import MIMEMultipart
 
 
 
-
-
-
-
 app = Flask(__name__)  # Initialze flask constructor
 mysql = MySQL(app)
 oauth = OAuth(app)

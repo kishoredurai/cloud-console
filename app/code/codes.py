@@ -1,31 +1,6 @@
 from app import  *
 
 
-@app.route("/student/registe", methods=["POST", "GET"])
-def registe():
-
-    if request.method == "POST":
-        result = request.form
-        email = result["email"]
-        rollno = result["rollno"]
-        name = result["name"]
-        contact = result["contact"]
-        dept = result["dept"]
-        profile = result["profile"]
-       
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('insert into user(name,rollno,department,email_id,mobile,user_profile,db_password,user_type) values(%s,%s,%s,%s,%s,%s,%s,"student")', [name,rollno,dept,email,contact,profile,rollno])
-        mysql.connection.commit()
-
-        return redirect(url_for('login'))
-    else:
-        return redirect(url_for('login'))
-
-    if person["is_logged_in"] == True and person["user_type"] == 'provider':
-       return render_template("profile.html", email=person["email"], name=person["name"],contact=person["contact"])
-
-    else:
-        return redirect(url_for('login'))
 
    
 

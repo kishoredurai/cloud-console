@@ -29,40 +29,58 @@ def google_authorize():
     google = oauth.create_client('google')
     token = google.authorize_access_token()
     resp = google.get('userinfo').json()
-    email=resp["email"]
-    
-    name=resp["given_name"]
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT * FROM user where email_id=%s LIMIT 1',[email])
-    student = cursor.fetchone()
-    print(student)
-    if(student):
-       
-        global person
-        session["id"] = student['user_id']
-        person["user_type"] = student['user_type']
-        person["email"] = resp["email"]
-        person["name"] = student['name']
-        person["dept"] = student['department']
-        person["rollno"] = student['rollno']
-        person["user_id"] = student['user_id']
-        person["contact"] = student['mobile']
-        person["user_profile"] = resp["picture"]
-        #flash("Password length must be at least 10 characters")
-        #return redirect(url_for('login'))    
-        #return red irect(url_for('login'))
-        return redirect(url_for('home'))
 
-    else:
-        text = resp["email"]
-        result = re.split(r"\.", text)
-        a=result[1][:2]
-        if(a=="cs"):
-            a="COMPUTER SCIENCE AND ENGINEERING"
-        if(a=="ct"):
-             a="COMPUTER TECHNOLOGY"
-        print((result[1][:2]))
-        return render_template("Student/student_register.html",student=resp,a=a)
+    
+    email=resp["email"]    
+    # name=resp["given_name"]
+
+
+    #  check domain name
+
+    domain = email.split('@')[1]
+    if(domain=='bitsathy.ac.in'):
+
+        print(domain)
+        
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM user where email_id=%s and account_status="yes"  LIMIT 1',[email])
+        student = cursor.fetchone()
+        print(student)
+
+        if(student):
+        
+            global person
+            session["id"] = student['user_id']
+            person["user_type"] = student['user_type']
+            person["email"] = resp["email"]
+            person["name"] = student['name']
+            person["dept"] = student['department']
+            person["rollno"] = student['rollno']
+            person["user_id"] = student['user_id']
+            person["contact"] = student['mobile']
+            person["user_profile"] = resp["picture"]
+            #flash("Password length must be at least 10 characters")
+            #return redirect(url_for('login'))    
+            #return red irect(url_for('login'))
+            return redirect(url_for('home'))
+
+        else:
+
+            text = resp["email"]
+            result = re.split(r"\.", text)
+            a=result[1][:2]
+            print((result[1][:2]))
+            if(a == 'ac'):
+                print('entered')
+                cursor.execute('SELECT * FROM department')
+                account = cursor.fetchall()
+                print(account)
+                return render_template("Student/student_register.html",student=resp,dept=account,user='staff')
+                
+            else:
+                cursor.execute('SELECT * FROM department where department_code=%s LIMIT 1',[a])
+                data = cursor.fetchone()                
+                return render_template("Student/student_register.html",student=resp,dept=data['department_name'],user='student')
 
 
     # return render_template('edit.html',resp=resp,a=a)
@@ -75,7 +93,7 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route("/result", methods=["POST", "GET"])
+@app.route("/login", methods=["POST", "GET"])
 def result():
     if request.method == "POST":  # Only if data has been posted
         result = request.form  # Get the data
@@ -107,6 +125,31 @@ def result():
             return redirect(url_for('provider_home'))
         else:
             return redirect(url_for('login'))
+
+
+@app.route("/register_student", methods=["POST", "GET"])
+def registe():
+
+    if request.method == "POST":
+        
+        result = request.form
+        email = result["email"]
+        rollno = result["rollno"]
+        name = result["name"]
+        contact = result["contact"]
+        dept = result["dept"]
+        profile = result["profile"]
+        print(result)
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('insert into user(name,rollno,department,email_id,mobile,user_profile,db_password,user_type) values(%s,%s,%s,%s,%s,%s,%s,"student")', [name,rollno,dept,email,contact,profile,rollno])
+        mysql.connection.commit()
+        print('done')
+        return redirect(url_for('login'))
+    else:
+        print('no post')
+        return redirect(url_for('login'))
+
+
 
 
 
