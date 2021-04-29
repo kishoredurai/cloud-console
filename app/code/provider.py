@@ -3,8 +3,8 @@ from app import  *
 
 @app.route("/provider/profile")
 def profile():
-    if not session.get("id") is None and person["user_type"] == 'provider':
-        return render_template("provider/provider_profile.html", email=person["email"], name=person["name"],contact=person["contact"])
+    if not session.get("id") is None and person["user"] == 'provider':
+        return render_template("provider/provider_profile.html", email=person["email"], name=person["name"])
 
     else:
         return redirect(url_for('login'))
@@ -12,7 +12,7 @@ def profile():
 
 @app.route("/provider/home")
 def provider_home():
-    if not session.get("id") is None and person["user_type"] == 'provider':
+    if not session.get("id") is None and person["user"] == 'provider':
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         account=cursor.execute('SELECT COUNT(*) FROM database_users')
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -26,7 +26,7 @@ def provider_home():
 
 @app.route("/provider/database/details", methods=["POST", "GET"])
 def provider_database_details():
-    if not session.get("id") is None and person["user_type"] == 'provider':
+    if not session.get("id") is None and person["user"] == 'provider':
                 
         if request.method == "POST":
             if request.form.get("submit_a"):
@@ -66,7 +66,7 @@ def provider_database_details():
 
 @app.route("/provider/database")
 def database():
-    if not session.get("id") is None and person["user_type"] == 'provider':
+    if not session.get("id") is None and person["user"] == 'provider':
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id ORDER BY applied_date DESC')
         account = cursor.fetchall()
@@ -78,7 +78,7 @@ def database():
 
 @app.route("/provider/student_details")
 def provider_student_details():
-    if not session.get("id") is None and person["user_type"] == 'provider':
+    if not session.get("id") is None and person["user"] == 'provider':
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM user ')
         account = cursor.fetchall()

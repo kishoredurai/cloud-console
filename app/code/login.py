@@ -5,9 +5,9 @@ from app import *
 def login():
     #return render_template("Student/student_home.html")
     if(not session.get("id") is None):
-        if(person["user_type"] == 'student'):
+        if(person["user"] == 'student'):
             return redirect(url_for('home'))
-        elif(person["user_type"] == 'provider'):
+        elif(person["user"] == 'provider'):
             return redirect(url_for('provider_home'))
         else:
             session.pop("id", None)
@@ -51,7 +51,8 @@ def google_authorize():
         
             global person
             session["id"] = student['user_id']
-            person["user_type"] = student['user_type']
+            person["user"] = "student"
+            person["user_type"] = student["user_type"]
             person["email"] = resp["email"]
             person["name"] = student['name']
             person["dept"] = student['department']
@@ -107,11 +108,11 @@ def result():
             session["id"] = student['admin_id']
             person["email"] = student["admin_username"]
             person["name"] = student['admin_name']
-            person["user_type"] = student['admin_user_type']
+            person["user"] = student['admin_user_type']
             person["user_id"] = student['admin_id']
-            if(person["user_type"] == 'provider'):
+            if(person["user"] == 'provider'):
                 return redirect(url_for('provider_home'))
-            elif(person["user_type"] == 'admin'):
+            elif(person["user"] == 'admin'):
                 return redirect(url_for('login'))
             else:
                 return Response("<h1> Admin</h1>")
@@ -121,13 +122,16 @@ def result():
             # If there is any error, redirect back to login
             return redirect(url_for('login'))
     else:
-        if not session.get("id") is None and person["user_type"] == 'provider':
+        if not session.get("id") is None and person["user"] == 'provider':
             return redirect(url_for('provider_home'))
         else:
             return redirect(url_for('login'))
 
 
-@app.route("/register_student", methods=["POST", "GET"])
+
+
+
+@app.route("/student/register", methods=["POST", "GET"])
 def registe():
 
     if request.method == "POST":
@@ -139,15 +143,21 @@ def registe():
         contact = result["contact"]
         dept = result["dept"]
         profile = result["profile"]
-        print(result)
+        user = result["user_type"]
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('insert into user(name,rollno,department,email_id,mobile,user_profile,db_password,user_type) values(%s,%s,%s,%s,%s,%s,%s,"student")', [name,rollno,dept,email,contact,profile,rollno])
+        cursor.execute('insert into user(name,rollno,department,email_id,mobile,user_profile,db_password,user_type) values(%s,%s,%s,%s,%s,%s,%s,%s)', [name,rollno,dept,email,contact,profile,rollno,user])
         mysql.connection.commit()
         print('done')
         return redirect(url_for('login'))
     else:
         print('no post')
         return redirect(url_for('login'))
+    
+    if not session.get("id") is None and person["user"] == 'provider':
+        return redirect(url_for('provider_home'))
+    else:
+        return redirect(url_for('login'))
+
 
 
 

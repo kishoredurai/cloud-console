@@ -31,6 +31,7 @@
                 <label for="uname"><strong>Contact</strong></label>
                 <input type="text" placeholder="Enter contact" name="contact" required>
                 <input type="hidden" name="profile" value="{{student.picture}}">
+                <input type="hidden" name="user_type" value="{{user}}">
 
                 <label for="psw"><strong>Department</strong></label>
                 {% if user == "student" %}

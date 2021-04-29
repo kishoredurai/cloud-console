@@ -2,7 +2,7 @@ from app import  *
 
 @app.route("/home")
 def home():
-    if not session.get("id") is None and person["user_type"] == 'student':
+    if not session.get("id") is None and person["user"] == 'student':
 
         return render_template("Student/student_home.html",user=person)
 
@@ -12,7 +12,7 @@ def home():
 
 @app.route("/profile", methods=["POST", "GET"])
 def student_profile():
-    if not session.get("id") is None and person["user_type"] == 'student':
+    if not session.get("id") is None and person["user"] == 'student':
                
         if request.method == "POST":
             if request.form.get("update"):
@@ -42,7 +42,7 @@ def student_profile():
 
 @app.route("/student_database")
 def student_database():
-    if not session.get("id") is None and person["user_type"] == 'student':
+    if not session.get("id") is None and person["user"] == 'student':
         
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         
