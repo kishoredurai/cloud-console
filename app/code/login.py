@@ -103,6 +103,8 @@ def result():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM admin where admin_username=%s and admin_password=%s LIMIT 1',[email,password])
         student = cursor.fetchone()
+
+        print("created")
         if(student):    
             global person
             session["id"] = student['admin_id']
@@ -145,8 +147,17 @@ def registe():
         profile = result["profile"]
         user = result["user_type"]
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('insert into user(name,rollno,department,email_id,mobile,user_profile,db_password,user_type) values(%s,%s,%s,%s,%s,%s,%s,%s)', [name,rollno,dept,email,contact,profile,rollno,user])
+        cursor.execute('insert into user(name,rollno,department,email_id,mobile,user_profile,db_password,user_type) values(%s,%s,%s,%s,%s,%s,%s,%s)', [name,rollno.upper(),dept,email,contact,profile,rollno.upper(),user])
         mysql.connection.commit()
+
+
+        #create linux user
+        os.system("echo 2709 | sudo -S useradd -m -d /var/www/html/"+rollno.upper()+" -s /bin/bash -p $(echo "+rollno.upper()+" | openssl passwd -1 -stdin) "+rollno.upper())
+                
+
+
+
+
         print('done')
         return redirect(url_for('login'))
     else:

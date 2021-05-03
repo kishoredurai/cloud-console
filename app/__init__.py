@@ -8,17 +8,15 @@ import re
 import pyrebase
 import schedule
 import time,atexit
-
+import os
 import MySQLdb.cursors
+import webbrowser 
 
 ## mail sender
 import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-
-
-
-
+import base64
 
 
 

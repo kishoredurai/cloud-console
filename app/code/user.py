@@ -109,3 +109,21 @@ def db_update():
         cursor.execute('update database_users set start_date=%s ,end_date=%s,db_name=%s,user_remark=%s where db_id=%s;',[start_date,end_date,dbname,remark,id])
         mysql.connection.commit()
         return redirect(url_for('student_database'))
+
+@app.route("/console")
+def console():
+    if not session.get("id") is None and person["user"] == 'student':
+
+        rollno=person['rollno']
+        message = rollno
+        message_bytes = message.encode('ascii')
+        base64_bytes = base64.b64encode(message_bytes)
+        base64_message = base64_bytes.decode('ascii')
+
+        print(base64_message)
+        link="http://localhost:8888/?hostname=10.30.0.11&username="+rollno+"&password="+base64_message
+        return webbrowser.open_new_tab(link)
+        return redirect(url_for('home'))
+
+    else:
+        return redirect(url_for('login'))
