@@ -60,6 +60,15 @@ def google_authorize():
             person["user_id"] = student['user_id']
             person["contact"] = student['mobile']
             person["user_profile"] = resp["picture"]
+
+            ## ascii convertion base64
+            message = student['rollno']
+            message_bytes = message.encode('ascii')
+            base64_bytes = base64.b64encode(message_bytes)
+            base64_message = base64_bytes.decode('ascii')
+
+            person["console"] = base64_message
+
             #flash("Password length must be at least 10 characters")
             #return redirect(url_for('login'))    
             #return red irect(url_for('login'))
