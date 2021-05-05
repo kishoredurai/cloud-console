@@ -22,7 +22,7 @@ import base64
 #Postegsql
 import psycopg2
 from psycopg2 import sql
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT # <-- ADD THIS LINE
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 
 app = Flask(__name__)  # Initialze flask constructor
@@ -76,8 +76,8 @@ auth = firebase.auth()
 db = firebase.database()
 
 
-con = psycopg2.connect(dbname='test',user='test', host='127.0.0.1',password='kishore',port='5432')
-con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+conn = psycopg2.connect(dbname='postgres',user='postgres', host='127.0.0.1',password='kishore',port='5432')
+conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
     
 # Initialze person as dictionary
 person = {"is_logged_in": False, "name": "", "email": "", "uid": "" , "contact": "" , "user_type": "" , "rollno": "" , "dept": "","user_id":"" , "user_profile" : "", "user" : "" ,"console":""}

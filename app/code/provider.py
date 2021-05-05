@@ -158,15 +158,14 @@ def postgre_db_create_check(db_id):
     datas = cur.fetchone()
     if not datas:
         try:
-            cur.execute("CREATE USER %s WITH PASSWORD '%s';"%(data['rollno'],data['db_password']))
-            conn.commit()
+            query = "CREATE ROLE "'"'+data['rollno']+'"'" LOGIN PASSWORD '"+data['db_password']+"';"
+            cur.execute(sql.SQL(query).format())
         except Exception as Ex:
             print("Error creating MySQL User: %s"%(Ex))   
 
     ## Database create ##
     try:
-        cur.execute("CREATE DATABASE %s;"%(data['db_name']))
-        conn.commit()
+        cur.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(data['db_name'])))
         print('db created')
     except Exception as Ex:
         print("Error creating MySQL User: %s"%(Ex))
@@ -209,8 +208,9 @@ def SQL_privilleges(data):
 def postgre_privilleges(data):
     cur = conn.cursor()
     try:
-        cur.execute('GRANT ALL PRIVILEGES ON DATABASE "%s" to %s;'%(data['db_name'],data['rollno']))
-        conn.commit()
+        query = "GRANT ALL PRIVILEGES ON DATABASE '"+data['db_name']+"' to "'"'+data['rollno']+'"'";"
+        cur.execute(sql.SQL(query).format())
+       
         print('grant privileges')
     except Exception as Ex:
         print("Error creating postgre User: %s"%(Ex))
