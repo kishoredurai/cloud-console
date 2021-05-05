@@ -2,7 +2,6 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 from flask_mysqldb import MySQL
 from datetime import date
 from apscheduler.schedulers.background import BackgroundScheduler
-import psycopg2
 
 from authlib.integrations.flask_client import OAuth
 import re
@@ -19,6 +18,11 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import base64
 
+
+#Postegsql
+import psycopg2
+from psycopg2 import sql
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT # <-- ADD THIS LINE
 
 
 app = Flask(__name__)  # Initialze flask constructor
@@ -72,8 +76,8 @@ auth = firebase.auth()
 db = firebase.database()
 
 
-conn = psycopg2.connect(database="test", user = "test", password = "kishore", host = "127.0.0.1", port = "5432")
-
+con = psycopg2.connect(dbname='test',user='test', host='127.0.0.1',password='kishore',port='5432')
+con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
     
 # Initialze person as dictionary
 person = {"is_logged_in": False, "name": "", "email": "", "uid": "" , "contact": "" , "user_type": "" , "rollno": "" , "dept": "","user_id":"" , "user_profile" : "", "user" : "" ,"console":""}
