@@ -2,6 +2,7 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 from flask_mysqldb import MySQL
 from datetime import date
 from apscheduler.schedulers.background import BackgroundScheduler
+import psycopg2
 
 from authlib.integrations.flask_client import OAuth
 import re
@@ -71,6 +72,7 @@ auth = firebase.auth()
 db = firebase.database()
 
 
+conn = psycopg2.connect(database="test", user = "test", password = "kishore", host = "127.0.0.1", port = "5432")
 
     
 # Initialze person as dictionary
@@ -83,14 +85,6 @@ person = {"is_logged_in": False, "name": "", "email": "", "uid": "" , "contact":
 
 ###################### db create funciton ##############################
 
-def SQL_privilleges(data):
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)    
-    try:
-        sqlCreateUser = "GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' IDENTIFIED BY '%s';"%(data['db_name'],data['rollno'],data['db_password'])
-        cursor.execute(sqlCreateUser)
-        print('grant privileges')
-    except Exception as Ex:
-        print("Error creating MySQL User: %s"%(Ex))
 
 
 
