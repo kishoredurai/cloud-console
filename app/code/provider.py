@@ -208,7 +208,7 @@ def SQL_privilleges(data):
 def postgre_privilleges(data):
     cur = conn.cursor()
     try:
-        query = "GRANT ALL PRIVILEGES ON DATABASE '"+data['db_name']+"' to "'"'+data['rollno']+'"'";"
+        query = "GRANT ALL PRIVILEGES ON DATABASE "+data['db_name']+" to "'"'+data['rollno']+'"'";"
         cur.execute(sql.SQL(query).format())
        
         print('grant privileges')

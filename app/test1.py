@@ -19,7 +19,7 @@ con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT) # <-- ADD THIS LINE
 
 cur = con.cursor()
 a='192CT120'
-db='test'
+db="sample_testing"
 b="kishore"
 # cur.execute(sql.SQL("CREATE DATABASE {}").format(
 #         sql.Identifier(db))
