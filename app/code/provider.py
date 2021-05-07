@@ -210,7 +210,7 @@ def postgre_privilleges(data):
     try:
         query = "GRANT ALL PRIVILEGES ON DATABASE "+data['db_name']+" to "'"'+data['rollno']+'"'";"
         cur.execute(sql.SQL(query).format())
-       
+        
         print('grant privileges')
     except Exception as Ex:
         print("Error creating postgre User: %s"%(Ex))

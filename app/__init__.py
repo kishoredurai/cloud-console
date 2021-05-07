@@ -78,7 +78,10 @@ db = firebase.database()
 
 conn = psycopg2.connect(dbname='postgres',user='postgres', host='127.0.0.1',password='kishore',port='5432')
 conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-    
+
+db = MySQLdb.connect("127.0.0.1","root","","db_console",cursorclass=MySQLdb.cursors.DictCursor)
+
+
 # Initialze person as dictionary
 person = {"is_logged_in": False, "name": "", "email": "", "uid": "" , "contact": "" , "user_type": "" , "rollno": "" , "dept": "","user_id":"" , "user_profile" : "", "user" : "" ,"console":""}
 
@@ -142,7 +145,6 @@ def email(sender,messages,subject):
 
 
 def database_check():
-    db = MySQLdb.connect("127.0.0.1","root","","db_console",cursorclass=MySQLdb.cursors.DictCursor)
     cursor = db.cursor()
     today = date.today()
     cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_status="Deactive" and database_users.Request_status = "Approved" and start_date = %s',[today,])
@@ -150,49 +152,114 @@ def database_check():
     if data :
         for x in range(len(data)):
 
-            name=data[x]['db_name']              
-            try:
-                sqlCreateUser = "GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' IDENTIFIED BY '%s';"%(data[x]['db_name'],data[x]['rollno'],data[x]['db_password'])
-                cursor.execute(sqlCreateUser)
-                print('approved')
-            except Exception as Ex:
-                print("Error creating MySQL User: %s"%(Ex))
-
-            cursor.execute('update database_users set db_status = "Active"  where db_id=%s;', [data[x]['db_id']])
-            db.commit()
+            if(data[x]['db_software']=='SQL'):
+                Sql_db_allow(data[x])
+            elif(data[x]['db_software']=='PostgreSQL'):
+                Postegsql_db_allow(data[x])
+                print('poste')
     else:
-        print('no details')
+        print('add no details')
 
-    ## revoke permission
-    cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_status="Active" and database_users.Request_status = "Approved" and end_date = %s',[today,])
-    data = cursor.fetchall() 
-    if data :
-        for x in range(len(data)):
-
-            name=data[x]['db_name']              
-            try:
-                sqlCreateUser = "REVOKE ALL PRIVILEGES ON %s.* FROM '%s'@'localhost';"%(data[x]['db_name'],data[x]['rollno'])
-                cursor.execute(sqlCreateUser)
-                
-                print('REVOKED')
-            except Exception as Ex:
-                print("Error creating MySQL User: %s"%(Ex))
-
-            cursor.execute('update database_users set db_status = "Deactive"  where db_id=%s;', [data[x]['db_id']])
-            db.commit()
-    else:
-        print('no details')
+    # revoke permission
+    # cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_status="Active" and database_users.Request_status = "Approved" and end_date = %s',[today,])
+    # data = cursor.fetchall() 
+    # if data :
+    #     for x in range(len(data)):
+    #         if(data[x]['db_software']=='SQL'):
+    #             Sql_db_remove(data[x])
+    #         elif(data[x]['db_software']=='PostgreSQL'):
+    #             Postegsql_db_allow(data[x])
+    # else:
+    #     print('revoke no details')
 
 
+
+
+
+
+def Sql_db_allow(data):
+    cursor = db.cursor()
+    name=data['db_name']              
+    try:
+        sqlCreateUser = "GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' IDENTIFIED BY '%s';"%(data['db_name'],data['rollno'],data['db_password'])
+        cursor.execute(sqlCreateUser)
+        print('approved'+name)
+        cursor.execute('update database_users set db_status = "Active"  where db_id=%s;', [data['db_id']])
+        db.commit()
+    except Exception as Ex:
+        print("Error creating MySQL User: %s"%(Ex))
+
+def Sql_db_remove(data):
+    cursor = db.cursor()
+    name=data['db_name']              
+    try:
+        sqlCreateUser = "REVOKE ALL PRIVILEGES ON %s.* FROM '%s'@'localhost';"%(data['db_name'],data['rollno'])
+        cursor.execute(sqlCreateUser)    
+        print('REVOKED '+name)
+        cursor.execute('update database_users set db_status = "Deactive"  where db_id=%s;', [data['db_id']])
+        db.commit()
+    except Exception as Ex:
+        print("Error creating MySQL User: %s"%(Ex))
+
+            
+    
+
+
+
+
+def Postegsql_db_allow(data):
+    cur = conn.cursor()
+    cursor = db.cursor()
+    name=['db_name']              
+    try:
+        query = "GRANT ALL PRIVILEGES ON DATABASE "+data['db_name']+" to "'"'+data['rollno']+'"'";"
+        cur.execute(sql.SQL(query).format())
+        print('postge approved '+name)
+        cursor.execute('update database_users set db_status = "Active"  where db_id=%s;', [data['db_id']])
+        db.commit()
+    except Exception as Ex:
+        print("Error creating MySQL User: %s"%(Ex))
+
+            
+def Postegsql_db_remove(data): 
+    cursor = db.cursor()
+    name=data['db_name']              
+    try:
+        query = "REVOKE ALL PRIVILEGES ON DATABASE "+data['db_name']+" FROM "'"'+data['rollno']+'"'";" 
+        cur.execute(sql.SQL(query).format())
+        query = "REVOKE CONNECT ON DATABASE "+data['db_name']+" FROM "'"'+data['rollno']+'"'";" 
+        cur.execute(sql.SQL(query).format())
+        print('REVOKED '+name)
+        cursor.execute('update database_users set db_status = "Deactive"  where db_id=%s;', [data['db_id']])
+        db.commit()
+    except Exception as Ex:
+        print("Error creating MySQL User: %s"%(Ex))
+   
+
+
+
+
+
+
+
+
+
+
+
+
+######################## Daily Mail send ##########################
 
 def provider_email():
 
     email('kishore.ct19@bitsathy.ac.in','this test mail','daily status')
 
 
+
+##################### timmer #######################################
+
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=provider_email, trigger="interval", hours=12)
-scheduler.add_job(func=database_check, trigger="interval", hours=12)
+scheduler.add_job(func=database_check, trigger="interval", seconds=2)
 scheduler.start()
 atexit.register(lambda: scheduler.shutdown())
 
