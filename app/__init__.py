@@ -161,16 +161,16 @@ def database_check():
         print('add no details')
 
     # revoke permission
-    # cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_status="Active" and database_users.Request_status = "Approved" and end_date = %s',[today,])
-    # data = cursor.fetchall() 
-    # if data :
-    #     for x in range(len(data)):
-    #         if(data[x]['db_software']=='SQL'):
-    #             Sql_db_remove(data[x])
-    #         elif(data[x]['db_software']=='PostgreSQL'):
-    #             Postegsql_db_allow(data[x])
-    # else:
-    #     print('revoke no details')
+    cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_status="Active" and database_users.Request_status = "Approved" and end_date = %s',[today,])
+    data = cursor.fetchall() 
+    if data :
+        for x in range(len(data)):
+            if(data[x]['db_software']=='SQL'):
+                Sql_db_remove(data[x])
+            elif(data[x]['db_software']=='PostgreSQL'):
+                Postegsql_db_allow(data[x])
+    else:
+        print('revoke no details')
 
 
 
