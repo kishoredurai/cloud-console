@@ -131,6 +131,7 @@ def SQL_db_create_check(db_id):
     except Exception as Ex:
         print("Error creating MySQL User: %s"%(Ex))
     
+    email(data['email_id'],'Account Created','sql db created')
 
     ## check database create date
 
@@ -170,7 +171,7 @@ def postgre_db_create_check(db_id):
     except Exception as Ex:
         print("Error creating MySQL User: %s"%(Ex))
     
-
+    email(data['email_id'],'Account Created','Posteges sql')
     ## check database create date
 
     today = date.today()

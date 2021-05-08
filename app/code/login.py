@@ -61,6 +61,9 @@ def google_authorize():
             person["contact"] = student['mobile']
             person["user_profile"] = resp["picture"]
 
+            cursor.execute('insert into login_history(user_id) values(%s)', [student['user_id']])
+            mysql.connection.commit()
+
             ## ascii convertion base64
             message = student['rollno']
             message_bytes = message.encode('ascii')

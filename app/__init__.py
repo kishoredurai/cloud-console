@@ -101,7 +101,7 @@ person = {"is_logged_in": False, "name": "", "email": "", "uid": "" , "contact":
 
 
 
-#### default function ###########
+#### default Email function ###########
 
 def email(sender,messages,subject):
 
@@ -140,8 +140,8 @@ def email(sender,messages,subject):
 
 
 
+################################ Database Check #######################
 
-################################ timer ##############
 
 
 def database_check():
@@ -168,12 +168,12 @@ def database_check():
             if(data[x]['db_software']=='SQL'):
                 Sql_db_remove(data[x])
             elif(data[x]['db_software']=='PostgreSQL'):
-                Postegsql_db_allow(data[x])
+                Postegsql_db_remove(data[x])
     else:
         print('revoke no details')
 
 
-
+################################ SQL prvilleges and revoke #######################
 
 
 
@@ -187,6 +187,7 @@ def Sql_db_allow(data):
         cursor.execute('update database_users set db_status = "Active"  where db_id=%s;', [data['db_id']])
         db.commit()
     except Exception as Ex:
+        print('sql allow')
         print("Error creating MySQL User: %s"%(Ex))
 
 def Sql_db_remove(data):
@@ -199,18 +200,19 @@ def Sql_db_remove(data):
         cursor.execute('update database_users set db_status = "Deactive"  where db_id=%s;', [data['db_id']])
         db.commit()
     except Exception as Ex:
+        print('sql remove')
         print("Error creating MySQL User: %s"%(Ex))
 
             
     
 
-
+################################ Postegsql prvilleges and revoke #######################
 
 
 def Postegsql_db_allow(data):
     cur = conn.cursor()
     cursor = db.cursor()
-    name=['db_name']              
+    name=data['db_name']              
     try:
         query = "GRANT ALL PRIVILEGES ON DATABASE "+data['db_name']+" to "'"'+data['rollno']+'"'";"
         cur.execute(sql.SQL(query).format())
@@ -218,10 +220,12 @@ def Postegsql_db_allow(data):
         cursor.execute('update database_users set db_status = "Active"  where db_id=%s;', [data['db_id']])
         db.commit()
     except Exception as Ex:
-        print("Error creating MySQL User: %s"%(Ex))
+        print("Error creating poss User: %s"%(Ex))
 
             
 def Postegsql_db_remove(data): 
+    cur = conn.cursor()
+
     cursor = db.cursor()
     name=data['db_name']              
     try:
@@ -233,7 +237,7 @@ def Postegsql_db_remove(data):
         cursor.execute('update database_users set db_status = "Deactive"  where db_id=%s;', [data['db_id']])
         db.commit()
     except Exception as Ex:
-        print("Error creating MySQL User: %s"%(Ex))
+        print("Error posteges remove User: %s"%(Ex))
    
 
 
