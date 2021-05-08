@@ -8,6 +8,7 @@
         integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
 
 </head>
+<script src="static/javascript/student_register_validate.js" type="text/javascript"></script>
 
 <body>
     <form action="/student/register" method="POST">
@@ -18,9 +19,9 @@
         <div class="formcontainer">
             <div class="container">
                 <label for="uname"><strong>Name</strong></label>
-                <input type="text" placeholder="Enter Username" name="name" value="{{student.name}}" >
+                <input type="text" placeholder="Enter Username" name="name" value="{{student.name}}">
                 <label for="mail"><strong>E-mail</strong></label>
-                <input type="text" placeholder="Enter E-mail" name="email" value="{{student.email}}" >
+                <input type="text" placeholder="Enter E-mail" name="email" value="{{student.email}}">
                 {% if user == "student" %}
                 <label for="uname"><strong>Rollno</strong></label>
                 {% endif %}
@@ -28,8 +29,7 @@
                 <label for="uname"><strong>Staff IDs</strong></label>
                 {% endif %}
                 <input type="text" placeholder="Enter Rollno" name="rollno" required>
-                <label for="uname"><strong>Contact</strong></label>
-                <input type="text" placeholder="Enter contact" name="contact" required>
+
                 <input type="hidden" name="profile" value="{{student.picture}}">
                 <input type="hidden" name="user_type" value="{{user}}">
 
@@ -47,11 +47,39 @@
                 </select>
 
                 {% endif %}
+                <label for="uname"><strong>Contact</strong></label>
+                <input type="text" id="number" placeholder="Enter contact (+91)" name="contact" required>
+                <div id="recaptcha-container"></div>
+                <button type="button" id="SendCode" onclick="phoneAuth();">SendCode</button>
+                <div id="otp" style="display:none;">
+                    <input type="text" id="verificationCode" placeholder="Enter verification code">
+                    <button type="button" onclick="codeverify();">Verify code</button>
+                </div>
             </div>
-            <input type="submit" value="register">
+            <input type="submit" style="visibility: hidden;" id="register" value="register">
 
     </form>
 </body>
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/6.0.2/firebase.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#config-web-app -->
+
+<script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+        apiKey: "AIzaSyDCL31T4QStQlXNtxBF7GHpZqljSRh_h-M",
+        authDomain: "db-console.firebaseapp.com",
+        databaseURL: "https://db-console-default-rtdb.firebaseio.com",
+        projectId: "db-console",
+        storageBucket: "db-console.appspot.com",
+        messagingSenderId: "91281671272",
+        appId: "1:91281671272:web:f97ee0cd7f4ecc508ce7dd"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+</script>
 <style>
     html,
     body {
