@@ -159,7 +159,7 @@ def postgre_db_create_check(db_id):
     datas = cur.fetchone()
     if not datas:
         try:
-            query = "CREATE ROLE "'"'+data['rollno']+'"'" LOGIN PASSWORD '"+data['db_password']+"';"
+            query = "CREATE USER "'"'+data['rollno']+'"'" LOGIN PASSWORD '"+data['db_password']+"';"
             cur.execute(sql.SQL(query).format())
         except Exception as Ex:
             print("Error creating MySQL User: %s"%(Ex))   

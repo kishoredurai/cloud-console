@@ -29,7 +29,6 @@ window.onload=function () {
           alert("Successfully registered");
           document.getElementById('otp').style.display = "none";
           document.getElementById("register").style.visibility = "visible";
-
           var user=result.user;
           console.log(user);
       }).catch(function (error) {

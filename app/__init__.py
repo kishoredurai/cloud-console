@@ -38,8 +38,8 @@ app.config['MYSQL_DB'] = 'db_console'
 
 #google Login 
 app.config['SECRET_KEY'] = "7VwoqYbf3cVOiHu_wWtb_A"
-app.config['GOOGLE_CLIENT_ID'] = "642500080555-7aaod8odtsdktfu7dusperbktfu0slc6.apps.googleusercontent.com"
-app.config['GOOGLE_CLIENT_SECRET'] = "TsUtxn9Y-dqW1M_K6zGjdYR1"
+app.config['GOOGLE_CLIENT_ID'] = "91281671272-rrve31v6ghn9afjfhga5l9s85t9saroq.apps.googleusercontent.com"
+app.config['GOOGLE_CLIENT_SECRET'] = "ZcVSybDQ8RnczOjFbdJeWPdL"
 
 
 
