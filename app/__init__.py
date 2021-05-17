@@ -89,7 +89,6 @@ person = {"is_logged_in": False, "name": "", "email": "", "uid": "" , "contact":
 
 
 
-
 ###################### db create funciton ##############################
 
 
@@ -263,7 +262,7 @@ def provider_email():
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=provider_email, trigger="interval", hours=12)
-scheduler.add_job(func=database_check, trigger="interval", seconds=2)
+scheduler.add_job(func=database_check, trigger="interval", hours=2)
 scheduler.start()
 atexit.register(lambda: scheduler.shutdown())
 

@@ -88,16 +88,25 @@ def google_authorize():
                 cursor.execute('SELECT * FROM department')
                 account = cursor.fetchall()
                 print(account)
+                deptarts=account
+                users='staff'
+                detail=resp
+                #return redirect(url_for('student_register'))
                 return render_template("Student/student_register.html",student=resp,dept=account,user='staff')
-                
+                #student_register(resp,account,'student')
             else:
                 cursor.execute('SELECT * FROM department where department_code=%s LIMIT 1',[a])
-                data = cursor.fetchone()                
+                data = cursor.fetchone()     
+                sds=data['department_name']        
+                #return redirect(url_for('student_register'))
                 return render_template("Student/student_register.html",student=resp,dept=data['department_name'],user='student')
-
+                #return redirect(url_for('login'),resp,data['department_name'],'student')
+                student_register(resp,sds,'student')
 
     # return render_template('edit.html',resp=resp,a=a)
     return redirect(url_for('login'))
+
+
 
 @app.route("/logout")
 def logout():

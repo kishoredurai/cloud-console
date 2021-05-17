@@ -80,8 +80,19 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 </script>
+<script>
+ //check for navigation time API support
+if (window.performance) {
+console.info("window.performance work's fine on this browser");
+}
+if (performance.navigation.type == 1) {
+  console.info( "This page is reloaded" );
+  window.location.replace("http://127.0.0.1:5000/");
 
-
+} else {
+  console.info( "This page is not reloaded");
+}
+  </script>
 
 <style>
     html,
