@@ -2,6 +2,45 @@
 <html>
 
 <head>
+    <script type="text/javascript" src="{{ url_for('static', filename='/javascript/db_register.js') }}"></script>
+    <script>
+
+    function validateForm(){
+        
+        startdate = document.getElementById('startdate');
+        endate = document.getElementById('endate');
+        var sdate =new Date(startdate.value); 
+        var edate =new Date(enddate.value); 
+
+        var smonth = sdate.getMonth(); // months start counting from zero!
+        var sday   = sdate.getDate();  
+        var syear  = sdate.getFullYear();
+
+        var emonth = edate.getMonth(); // months start counting from zero!
+        var eday   = edate.getDate();  
+        var eyear  = edate.getFullYear();
+    
+        alert(smonth)
+        var d = new Date();
+        var month = d.getMonth(); // months start counting from zero!
+        var day   = d.getDate();  
+        var year  = d.getFullYear();
+        return false
+        // if(syear >= year)
+        // {
+        //     if(smonth >= month && sday >= day &&)
+        // }
+        // else{
+
+        // }
+        // if(eyear  )
+        // {
+
+        // }
+
+        // }
+
+    </script>
     <title>database registration form</title>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600' rel='stylesheet'
         type='text/css'>
@@ -184,7 +223,7 @@
 
 <body>
     <div class="main-block">
-        <form action="db_register" method="POST">
+        <form action="db_register" onsubmit="return validateForm()" method="POST">
             <h1>Register DB console</h1>
             <fieldset>
                 <legend>
@@ -219,9 +258,9 @@
                                 name="dbname" onkeyup='check();' required></div>
                     </div>
                     <div>
-                        <div><label>From Date</label><input type="date" name="startdate" required></div>
+                        <div><label>From Date</label><input type="date" id="startdate" name="startdate" required></div>
 
-                        <div><label>To Date</label><input type="date" name="enddate" required></div>
+                        <div><label>To Date</label><input type="date" id="endate" name="enddate" required></div>
 
                         <div>
                             <label>Remark *</label>
@@ -305,5 +344,7 @@
             
         }
 </script>
+
+
 
 </html>

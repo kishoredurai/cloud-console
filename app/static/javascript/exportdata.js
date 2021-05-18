@@ -1,3 +1,4 @@
+console.log('test');
 function exportData(){
     /* Get the HTML data using Element by Id */
     var table = document.getElementById("tblStocks");
