@@ -14,7 +14,7 @@
     <form action="/student/register" method="POST">
         <h1>SIGN UP</h1>
         <div class="icon">
-            <img src="{{student.picture}}" alt="Avatar" style="width:200px">
+            <img src="{{student.user_profile}}" alt="Avatar" style="width:200px">
         </div>
         <div class="formcontainer">
             <div class="container">
@@ -30,7 +30,7 @@
                 {% endif %}
                 <input type="text" placeholder="Enter Rollno" name="rollno" required>
 
-                <input type="hidden" name="profile" value="{{student.picture}}">
+                <input type="hidden" name="profile" value="{{student.user_profile}}">
                 <input type="hidden" name="user_type" value="{{user}}">
 
                 <label for="psw"><strong>Department</strong></label>

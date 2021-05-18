@@ -118,8 +118,10 @@ def SQL_db_create_check(db_id):
     datas = cursor.fetchall()
     if not datas:
         try:
-            sqlCreateUser = "CREATE USER '%s'@'localhost' IDENTIFIED BY '%s';"%(data['rollno'],data['db_password'])
+            sqlCreateUser = "CREATE USER '%s'@'localhost' IDENTIFIED BY '%s';"%(data['rollno'],data['rollno'])
             cursor.execute(sqlCreateUser)
+            cursor.execute('update db_login_user set db_user_status = "Active" and where db_software = "SQL" and db_id=%s;',[data['user_id']])
+            mysql.connection.commit() 
         except Exception as Ex:
             print("Error creating MySQL User: %s"%(Ex))   
 
@@ -159,8 +161,10 @@ def postgre_db_create_check(db_id):
     datas = cur.fetchone()
     if not datas:
         try:
-            query = "CREATE USER "'"'+data['rollno']+'"'" LOGIN PASSWORD '"+data['db_password']+"';"
+            query = "CREATE USER "'"'+data['rollno']+'"'" LOGIN PASSWORD '"+data['rollno']+"';"
             cur.execute(sql.SQL(query).format())
+            cursor.execute('update db_login_user set db_user_status = "Active" and where db_software = "PostgreSQL" and db_id=%s;',[data['user_id']])
+            mysql.connection.commit() 
         except Exception as Ex:
             print("Error creating MySQL User: %s"%(Ex))   
 
@@ -197,9 +201,11 @@ def postgre_db_create_check(db_id):
 
 
 def SQL_privilleges(data):
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)    
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM db_login_user where db_software = "SQL" and user_id=%s',[data['user_id']])
+    db_user_detail = cursor.fetchone()    
     try:
-        sqlCreateUser = "GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' IDENTIFIED BY '%s';"%(data['db_name'],data['rollno'],data['db_password'])
+        sqlCreateUser = "GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' IDENTIFIED BY '%s';"%(data['db_name'],data['rollno'],db_user_detail['user_id'])
         cursor.execute(sqlCreateUser)
         print('grant privileges')
     except Exception as Ex:

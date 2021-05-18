@@ -45,8 +45,8 @@ def google_authorize():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM user where email_id=%s and account_status="yes"  LIMIT 1',[email])
         student = cursor.fetchone()
-        print(student)
-
+        #print(student)
+  
         if(student):
         
             global person
@@ -85,14 +85,14 @@ def google_authorize():
             print((result[1][:2]))
             if(a == 'ac'):
                 print('entered')
-                cursor.execute('SELECT * FROM department')
-                account = cursor.fetchall()
-                print(account)
-                deptarts=account
-                users='staff'
-                detail=resp
-                #return redirect(url_for('student_register'))
-                return render_template("Student/student_register.html",student=resp,dept=account,user='staff')
+                
+                person['email']=resp['email']
+                person['name']=resp['name']
+                person['user_profile']=resp['picture']
+                person["user_type"] = 'staff'
+                
+                return redirect(url_for('student_register'))
+                #return render_template("Student/student_register.html",student=resp,dept=account,user='staff')
                 #student_register(resp,account,'student')
             else:
                 cursor.execute('SELECT * FROM department where department_code=%s LIMIT 1',[a])
@@ -152,6 +152,21 @@ def result():
 
 
 
+@app.route("/register", methods=["POST", "GET"])
+def student_register():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    if(person['user_type']=='staff'):        
+        cursor.execute('SELECT * FROM department')
+        account = cursor.fetchall()
+        print(account)
+        return render_template("Student/student_register.html",student=person,dept=account,user='staff')
+    else:
+        if not session.get("id") is None and person["user"] == 'provider':
+            return redirect(url_for('provider_home'))
+        else:
+            return redirect(url_for('login'))
+
+
 
 
 @app.route("/student/register", methods=["POST", "GET"])
@@ -170,13 +185,16 @@ def registe():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('insert into user(name,rollno,department,email_id,mobile,user_profile,db_password,user_type) values(%s,%s,%s,%s,%s,%s,%s,%s)', [name,rollno.upper(),dept,email,contact,profile,rollno.upper(),user])
         mysql.connection.commit()
-
+        last_id=cursor.lastrowid
 
         #create linux user
         os.system("echo 2709 | sudo -S useradd -m -d /var/www/html/"+rollno.upper()+" -s /bin/bash -p $(echo "+rollno.upper()+" | openssl passwd -1 -stdin) "+rollno.upper())
                 
+        cursor.execute('insert into db_login_user(user_id,db_software,db_password) values(%s,%s,%s)', [last_id,'SQL',rollno.upper()])
+        mysql.connection.commit()
 
-
+        cursor.execute('insert into db_login_user(user_id,db_software,db_password) values(%s,%s,%s)', [last_id,'PostgreSQL',rollno.upper()])
+        mysql.connection.commit()
 
 
         print('done')

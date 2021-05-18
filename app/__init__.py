@@ -271,7 +271,4 @@ atexit.register(lambda: scheduler.shutdown())
 
 
 
-
-
-
 from app.code import login,codes,user,provider
