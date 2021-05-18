@@ -56,7 +56,9 @@ def student_database():
     
 @app.route("/db_register", methods=["POST", "GET"])
 def registers():
-    
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur = conn.cursor()   
+
     if request.method == "POST":
 
         result = request.form   
@@ -70,12 +72,33 @@ def registers():
         status = "Not Approved"
 
 
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        
         cursor.execute('insert into database_users(user_id, db_software, start_date, end_date, db_name, Request_status, user_remark) values(%s,%s,%s,%s,%s,%s,%s)', [
                        person['user_id'],software,start_date,end_date, dbname, status, remark])
         mysql.connection.commit()
         return redirect(url_for('student_database'))
-    return render_template("Student/student_db_register.html",user=person)
+    
+    #poste
+
+    cur.execute('SELECT usename FROM pg_catalog.pg_user')
+    datas = list(cur.fetchall())
+    
+    rowarray_lists = []
+    for row in datas:
+        ts = (row[0])
+        rowarray_lists.append(ts)
+    print(rowarray_lists)
+
+    # sql 
+    cursor.execute('SELECT User FROM mysql.user')
+    rows = cursor.fetchall()
+    rowarray_list = []
+    for row in rows:
+        t = (row['User'])
+        rowarray_list.append(t)
+
+    print(rowarray_list)
+    return render_template("Student/student_db_register.html",user=person,list=json.dumps(rowarray_list),lists=json.dumps(rowarray_lists))
 
 
 

@@ -191,13 +191,13 @@
                     <h3>Account Details</h3>
                 </legend>
 
-                    <div class="account-details">
-                        <div><label>Name</label><input type="text" name="name" value="{{user.name}}" disabled></div>
-                        <div><label>Email</label><input type="text" value="{{user.email}}" disabled></div>
-                        <div><label>Roll No</label><input type="text" name="name" value="{{user.rollno}}" disabled>
-                        </div>
-                        <div><label>department</label><input type="text" value="{{user.dept}}" disabled></div>
+                <div class="account-details">
+                    <div><label>Name</label><input type="text" name="name" value="{{user.name}}" disabled></div>
+                    <div><label>Email</label><input type="text" value="{{user.email}}" disabled></div>
+                    <div><label>Roll No</label><input type="text" name="name" value="{{user.rollno}}" disabled>
                     </div>
+                    <div><label>department</label><input type="text" value="{{user.dept}}" disabled></div>
+                </div>
             </fieldset>
             <fieldset>
                 <legend>
@@ -207,15 +207,16 @@
                     <div>
                         <div><label>Database *</label>
                             <div class="gender">
-                                <input type="radio" value="SQL" id="male" name="database" required />
+                                <input type="radio" value="SQL" id="male" onclick='enable();' name="database" required />
                                 <label for="male" class="radio">MYSQL</label>
-                                <input type="radio" value="PostgreSQL" id="male" name="database" required />
+                                <input type="radio" value="PostgreSQL" id="male"  onclick='enable();'  name="database" required />
                                 <label for="male" class="radio">Posteges SQL</label>
                             </div>
                         </div>
-                        <div><label>Database Username</label><input type="text" value={{user.rollno}} disabled></div>
+                        <div><label>Database Username</label><input type="text" value="{{user.rollno}}" disabled></div>
                         <div><label>Database Password</label><input type="text" value="XXXXXX" disabled></div>
-                        <div><label>Database Name</label><input type="text" name="dbname" required></div>
+                        <div><label>Database Name</label><span id="error-name"></span><input type="text" id="dbaname"
+                                name="dbname" onkeyup='check();' required></div>
                     </div>
                     <div>
                         <div><label>From Date</label><input type="date" name="startdate" required></div>
@@ -236,17 +237,73 @@
                 </legend>
                 <div class="terms-mailing">
                     <div class="checkbox">
-                        <input  reqquired type="checkbox" name="checkbox"><span>I accept the <a
+                        <input reqquired type="checkbox" name="checkbox"><span>I accept the <a
                                 href="https://www.w3docs.com/privacy-policy">Privacy Policy for W3Docs.</a></span>
                     </div>
                     <div class="checkbox">
-                        <input  required type="checkbox" name="checkbox"><span>I want to recelve personallzed offers by your
+                        <input required type="checkbox" name="checkbox"><span>I want to recelve personallzed offers by
+                            your
                             site</span>
                     </div>
             </fieldset>
-            <button type="submit">Submit</button>
+            <button id="register" type="submit">Submit</button>
         </form>
     </div>
 </body>
+<script>
+    document.getElementById("dbaname").disabled = true;
+    function enable(){
+
+        document.getElementById("dbaname").disabled = false;
+
+    }
+    var check = function () {
+
+        var radios = document.getElementsByName("database");
+        var selected = Array.from(radios).find(radio => radio.checked);
+        db=selected.value;
+
+            var a = document.getElementById('dbaname').value
+            const list = JSON.parse({{list | tojson }});
+            const lists = JSON.parse({{lists | tojson }});
+
+            
+
+
+            if (db == 'SQL') {
+                console.log('entered')
+
+                for (i = 0; i < list.length; i++) {
+                    if (a == list[i]) {
+                        document.getElementById('error-name').innerHTML = 'Exist in database';
+                        document.getElementById('register').disabled = true;
+                        break;
+                    } else {
+
+                        document.getElementById('error-name').innerHTML = 'Not exist';
+                        document.getElementById('register').disabled = false;
+                    }
+                }
+
+            }
+            else if(db == 'PostgreSQL'){
+
+                for (i = 0; i < lists.length; i++) {
+                    if (a == lists[i]) {
+                        document.getElementById('error-name').innerHTML = 'Exist in database';
+                        document.getElementById('register').disabled = true;
+                        break;
+                    } else {
+
+                        document.getElementById('error-name').innerHTML = 'Not exist';
+                        document.getElementById('register').disabled = false;
+                    }
+                }
+
+            }
+            
+            
+        }
+</script>
 
 </html>
