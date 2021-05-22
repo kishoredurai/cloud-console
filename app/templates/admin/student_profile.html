@@ -1,0 +1,50 @@
+{% include 'headers/student_header.html' %}
+
+<!DOCTYPE html>
+<html>
+
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <script>
+          swal("{{message}}", "Keep Password Safe!", "{{category}}");
+        </script>
+        {% endfor %}
+    {% endif %}
+  {% endwith %}
+  
+    <img src="{{user.user_profile}}"/>
+
+   <h1> Name  {{user.name}}</h1>
+   <h1> Email Id  {{user.email}}</h1>
+   <h1> Contact  {{user.contact}}</h1>
+
+
+
+   <br>
+    {% if sql_db != "Deactive" %}
+        <h2>SQL</h2>
+        <form action="profile" method="POST">
+        <input type="text" id="login" class="fadeIn second" name="sql_name"  value={{user.rollno}} placeholder="Usern Nmae" disabled>
+        <input type="text" id="login" class="fadeIn second" name="sql_dbpasswd"  value={{sql_db}} placeholder="Database Password" >
+        <input type="hidden" name="db_software" value="PostgreSQL">
+        <input type="submit" class="fadeIn fourth" name="update" value="update">
+
+      {% endif %}
+      <br>
+        {% if pos_db != "Deactive" %}
+        <h2>PostgreSQL</h2>
+        <form action="profile" method="POST">
+
+        <input type="text" id="login" class="fadeIn second" name="name"  value={{user.rollno}} placeholder="Usern Nmae" disabled>
+        <input type="text" id="login" class="fadeIn second" name="dbpasswd"  value={{pos_db}} placeholder="Database Password" >
+        <input type="hidden" name="db_software" value="PostgreSQL">
+        <input type="submit" class="fadeIn fourth" name="update_post" value="update">
+      </form>
+        {% endif %}
+        
+</form>
+</body>
+
+</html>

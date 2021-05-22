@@ -44,3 +44,51 @@ function exportData(){
          /* download the data file named "Stock_Price_Report.csv" */
         link.click();
 }
+
+
+
+    jQuery(function ($) {
+        $("#exportToButton").click(function () {
+            var dataSource = shield.DataSource.create({
+                data: "#tblStocks",
+                schema: {
+                    type: "table",
+                    fields: {
+                        Name: { type: String },
+                        Age: { type: Number },
+                        Email: { type: String }
+                    }
+                }
+            });
+
+            dataSource.read().then(function (data) {
+                var pdf = new shield.exp.PDFDocument({
+                    author: "Devnote",
+                    created: new Date()
+                });
+
+                pdf.addPage("a4", "portrait");
+
+                pdf.table(
+                    50,
+                    50,
+                    data,
+                    [
+                        { field: "Name", title: "Name", width: 200 },
+                        { field: "Age", title: "Age", width: 50 },
+                        { field: "Email", title: "Email", width: 200 }
+                    ],
+                    {
+                        margins: {
+                            top: 50,
+                            left: 50
+                        }
+                    }
+                );
+
+                pdf.saveAs({
+                    fileName: "exportToPdf"
+                });
+            });
+        });
+    });

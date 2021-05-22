@@ -21,7 +21,10 @@ def login():
 def google_login():
     google = oauth.create_client('google')
     redirect_uri = url_for('google_authorize', _external=True)
+    if not session.get("id") is None and person["user"] == 'student':
+        return redirect(url_for('home'))
     return google.authorize_redirect(redirect_uri)
+    
 
 
 @app.route('/login/google/authorize')
@@ -103,7 +106,10 @@ def google_authorize():
                 #return redirect(url_for('student_register'))
                 return render_template("Student/student_register.html",student=resp,dept=data['department_name'],user='student')
                 #return redirect(url_for('login'),resp,data['department_name'],'student')
-                student_register(resp,sds,'student')
+    
+
+    if not session.get("id") is None and person["user"] == 'student':
+        return redirect(url_for('home'))
 
     # return render_template('edit.html',resp=resp,a=a)
     return redirect(url_for('login'))
@@ -124,7 +130,12 @@ def result():
         email = result["email"]
         password = result["pass"]
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM admin where admin_username=%s and admin_password=%s LIMIT 1',[email,password])
+        message = password
+        message_bytes = message.encode('ascii')
+        base64_bytes = base64.b64encode(message_bytes)
+        base64_message = base64_bytes.decode('ascii')
+
+        cursor.execute('SELECT * FROM admin where admin_username=%s and admin_password=%s LIMIT 1',[email,base64_message])
         student = cursor.fetchone()
 
         print("created")

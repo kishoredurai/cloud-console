@@ -135,7 +135,7 @@ def registers():
     rows = cursor.fetchall()
     rowarray_list = []
     for row in rows:
-        t = (row['User'])
+        t = (row['Database'])
         rowarray_list.append(t)
 
     print(rowarray_list)
