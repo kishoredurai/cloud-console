@@ -12,33 +12,54 @@
         var sdate =new Date(startdate.value); 
         var edate =new Date(enddate.value); 
 
-        var smonth = sdate.getMonth(); // months start counting from zero!
-        var sday   = sdate.getDate();  
-        var syear  = sdate.getFullYear();
 
-        var emonth = edate.getMonth(); // months start counting from zero!
-        var eday   = edate.getDate();  
-        var eyear  = edate.getFullYear();
+
+        // var smonth = sdate.getMonth(); // months start counting from zero!
+        // var sday   = sdate.getDate();  
+        // var syear  = sdate.getFullYear();
+
+        // var emonth = edate.getMonth(); // months start counting from zero!
+        // var eday   = edate.getDate();  
+        // var eyear  = edate.getFullYear();
     
-        alert(smonth)
+        // alert(smonth)
         var d = new Date();
-        var month = d.getMonth(); // months start counting from zero!
-        var day   = d.getDate();  
-        var year  = d.getFullYear();
-        return false
+
+        if(sdate>=d){
+            console.log('true sdate')
+
+        }
+        else{
+            return false
+        }
+        if(edate>=sdate){
+            console.log('true edate')
+        }
+        else{
+            return false
+        }
+        // var month = d.getMonth(); // months start counting from zero!
+        // var day   = d.getDate();  
+        // var year  = d.getFullYear();
+        // return false
         // if(syear >= year)
         // {
-        //     if(smonth >= month && sday >= day &&)
+        //     if(smonth >= month && sday >= day && syear == year)
         // }
         // else{
 
         // }
-        // if(eyear  )
+        // if(eyear == syear && smonth >= emonth )
         // {
+        //         if(edate >= sdate){
 
+        //         }
+        //         else{
+        //             return false
+        //         }
         // }
 
-        // }
+        }
 
     </script>
     <title>database registration form</title>

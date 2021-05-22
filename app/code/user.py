@@ -12,30 +12,71 @@ def home():
 
 @app.route("/profile", methods=["POST", "GET"])
 def student_profile():
+    cur = conn.cursor()   
     if not session.get("id") is None and person["user"] == 'student':
                
         if request.method == "POST":
             if request.form.get("update"):
                 result = request.form  # Get the data
-                ss = result["dbpasswd"]
+                ss = result["sql_dbpasswd"]
+                db_soft = result["db_software"]
+
                 cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-                try:
-                    sqlCreateUser = "ALTER USER '%s'@'localhost' IDENTIFIED BY '%s';"%(person['rollno'],ss)
-                    cursor.execute(sqlCreateUser)
-                    cursor.execute('update user set db_password=%s where user_id=%s;', [ss,person['user_id']])
-                    mysql.connection.commit()   
-                    flash("Password Updated Successfully !", "success")        
-                    return redirect(url_for('student_profile'))
-                except Exception as Ex:
-                    print("Error creating MySQL User: %s"%(Ex))
-                    flash("Password Not Updated !", "warning")        
-                    return redirect(url_for('student_profile'))
+
+                if(db_soft == 'SQL'):
+                    try:
+                        sqlCreateUser = "ALTER USER '%s'@'localhost' IDENTIFIED BY '%s';"%(person['rollno'],ss)
+                        cursor.execute(sqlCreateUser)
+                        cursor.execute('update db_login_user set db_password=%s where db_software = %s and user_id=%s;', [ss,db_soft,person['user_id']])
+                        mysql.connection.commit()   
+                        flash("Password Updated Successfully !", "success")        
+                        return redirect(url_for('student_profile'))
+                    except Exception as Ex:
+                        print("Error creating MySQL User: %s"%(Ex))
+                        flash("Password Not Updated !", "warning")        
+                        return redirect(url_for('student_profile'))
+
+
+            if request.form.get("update_post"):
+                result = request.form  # Get the data
+                ss = result["dbpasswd"]
+                db_soft = result["db_software"]
+
+                cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+                if(db_soft == 'PostgreSQL'):
+                    print('post')
+                    try:
+                        query = "ALTER USER "'"'+person['rollno']+'"'" WITH PASSWORD '"+ss+"' ;"
+                        cur.execute(sql.SQL(query).format())
+                        cursor.execute('update db_login_user set db_password=%s where db_software = %s and user_id=%s;', [ss,db_soft,person['user_id']])
+                        mysql.connection.commit()   
+
+                        print('enetered')
+
+                        flash(" postegs Password Updated Successfully !", "success")        
+                        return redirect(url_for('student_profile'))
+                    except Exception as Ex:
+                        print("Error creating MySQL User: %s"%(Ex))
+                        flash("Password Not Updated !", "warning")        
+                        return redirect(url_for('student_profile'))
+
                 
+                    
 
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM user where user_id = %s',[person['user_id']])
-        student = cursor.fetchone()
-        return render_template("Student/student_profile.html", user=person , password=student['db_password'])
+
+
+        sql_db='Deactive'
+        pos_db='Deactive'
+        cursor.execute('SELECT * FROM db_login_user where user_id = %s',[person['user_id']])
+        db = cursor.fetchall()
+        for row in db:
+            if(row['db_software']=='SQL' and row['db_user_status'] == 'Active'):
+                sql_db=row['db_password']
+            if(row['db_software']=='PostgreSQL' and row['db_user_status'] == 'Active'):
+                pos_db=row['db_password']
+        return render_template("Student/student_profile.html", user=person , sql_db = sql_db ,pos_db=pos_db)
 
     else:
         return redirect(url_for('login'))
@@ -80,7 +121,7 @@ def registers():
     
     #poste
 
-    cur.execute('SELECT usename FROM pg_catalog.pg_user')
+    cur.execute('SELECT datname FROM pg_database;')
     datas = list(cur.fetchall())
     
     rowarray_lists = []
@@ -90,7 +131,7 @@ def registers():
     print(rowarray_lists)
 
     # sql 
-    cursor.execute('SELECT User FROM mysql.user')
+    cursor.execute('show DATABASES')
     rows = cursor.fetchall()
     rowarray_list = []
     for row in rows:

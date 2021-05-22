@@ -46,6 +46,7 @@ def google_authorize():
         cursor.execute('SELECT * FROM user where email_id=%s and account_status="yes"  LIMIT 1',[email])
         student = cursor.fetchone()
         #print(student)
+    
   
         if(student):
         
@@ -60,6 +61,7 @@ def google_authorize():
             person["user_id"] = student['user_id']
             person["contact"] = student['mobile']
             person["user_profile"] = resp["picture"]
+
 
             cursor.execute('insert into login_history(user_id) values(%s)', [student['user_id']])
             mysql.connection.commit()

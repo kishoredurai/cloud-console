@@ -31,7 +31,7 @@
                     <td>{{row.db_status}}</td>
                     <td>{{row.Request_status}}</td>
                     {% if row.Request_status == "Approved" %}<td>Database Approved</td>{% endif %}
-                    {% if row.Request_status == "Not Approved" %}<td>>
+                    {% if row.Request_status == "Not Approved" %}<td>
                         <button type="submit" name="delete" value="{{row.db_id}}">Delete</button>
                         <button type="submit" name="update" value="{{row.db_id}}">Update</button>
                     </td>{% endif %}
