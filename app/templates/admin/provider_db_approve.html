@@ -1,8 +1,11 @@
+
+{% include 'headers/provider_header.html' %}
+
 <!DOCTYPE html>
 <html>
 
 <head>
-    <title>database registration form</title>
+    <title>database Details</title>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600' rel='stylesheet'
         type='text/css'>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
@@ -184,7 +187,7 @@
 
 <body>
     <div class="main-block">
-        <form action="db_update" method="POST">
+        <form action="/provider/database/details" method="POST">
             <h1>Register DB console</h1>
             <fieldset>
                 <legend>
@@ -192,11 +195,15 @@
                 </legend>
 
                 <div class="account-details">
-                    <div><label>Name</label><input type="text" name="name" value="{{user.name}}" disabled></div>
-                    <div><label>Email</label><input type="text" value="{{user.email}}" disabled></div>
-                    <div><label>Roll No</label><input type="text" name="name" value="{{user.rollno}}" disabled>
+                    <div><label>Name</label><input type="text" name="name" value="{{data.name}}" disabled></div>
+                    <div><label>Email</label><input type="text" value="{{data.email_id}}" disabled></div>
+                    <div><label>Roll No</label><input type="text" name="name" value="{{data.rollno}}" disabled></div>
+                    <div><label>User Type</label><input type="text" name="name" value="{{data.user_type}}" disabled>
                     </div>
-                    <div><label>department</label><input type="text" value="{{user.dept}}" disabled></div>
+                    <div><label>Contact</label><input type="text" name="name" value="{{data.mobile}}" disabled>
+
+                    </div>
+                    <div><label>department</label><input type="text" value="{{data.department}}" disabled></div>
                 </div>
             </fieldset>
             <fieldset>
@@ -205,45 +212,66 @@
                 </legend>
                 <div class="personal-details">
                     <div>
-                        <div><label>Database *</label>
-                            <input type="text" value="{{data.db_software}}" disabled>
+                        <div><label>Database </label>
+                            <input type="text" value={{data.db_software}} disabled>
                         </div>
-                        <div><label>Database Username</label><input type="text" value={{user.rollno}} disabled></div>
-                        <div><label>Database Password</label><input type="text" value="XXXXXX" disabled></div>
-                        <div><label>Database Name</label><input type="text" name="dbname" value="{{data.db_name}}">
+                        <div><label>Database Username</label><input type="text" value="{{data.rollno}}" disabled></div>
+                        <div><label>Database Password</label><input type="text" value="{{data.db_password}}" disabled>
                         </div>
+                        <div><label>Database Name</label><input type="text" value="{{data.db_name}}" disabled></div>
+                        <div><label>Applied Date</label><input type="text" value="{{data.applied_date}}" disabled></div>
+
                     </div>
                     <div>
-                        <div><label>From Date</label><input type="date" value="{{data.start_date}}" name="startdate">
-                        </div>
+                        <div><label>From Date</label><input type="date" value="{{data.start_date}}" disabled></div>
 
-                        <div><label>To Date</label><input type="date" name="enddate" value="{{data.end_date}}"></div>
+                        <div><label>To Date</label><input type="date" value="{{data.end_date}}" disabled></div>
 
                         <div>
-                            <label>Remark *</label>
-                            <input type="text" row="10" name="remark" value="{{data.user_remark}}">
+                            <label>Remark </label>
+                            <input type="text" value="{{data.user_remark}}" rows="5" cols="60" disabled>
                         </div>
-                        <input type="hidden" name="id" value="{{data.db_id}}">
+
                     </div>
                 </div>
             </fieldset>
             <fieldset>
                 <legend>
-                    <h3>Terms and Mailing</h3>
+                    <h3>Provider Remarks</h3>
+
                 </legend>
-                <div class="terms-mailing">
-                    <div class="checkbox">
-                        <input required type="checkbox" name="checkbox"><span>I accept the <a
-                                href="https://www.w3docs.com/privacy-policy">Privacy Policy for W3Docs.</a></span>
+                <div class="personal-details">
+
+                    <div>
+                        <label>Remark </label>
+                        <textarea name="provider_remark" rows="5" cols="60" required></textarea>
                     </div>
-                    <div class="checkbox">
-                        <input required type="checkbox" name="checkbox"><span>I want to recelve personallzed offers by
-                            your
-                            site</span>
-                    </div>
-            </fieldset>
-            <button type="submit" name="updates" >Submit</button>
-        </form>
+                </div>
+    
+
+    </fieldset>
+    {% if  data.Request_status  != "Approved" and  data.Request_status  != "Rejected" %}
+    <fieldset>
+        <legend>
+            <h3>Terms and Mailing</h3>
+        </legend>
+        <div class="terms-mailing">
+            <div class="checkbox">
+                <input reqquired type="checkbox" name="checkbox"><span>I accept the <a
+                        href="https://www.w3docs.com/privacy-policy">Privacy Policy for W3Docs.</a></span>
+            </div>
+            <div class="checkbox">
+                <input required type="checkbox" name="checkbox"><span>I want to recelve personallzed offers by your
+                    site</span>
+            </div>
+    </fieldset>
+    
+
+    <button type="submit" name="approve" value={{data.db_id}}>Approve</button>
+    <button type="submit" name="reject" value={{data.db_id}}>Reject</button>
+    {% endif %}
+    <a type="button" class="btn btn-primary" href="/provider/database">BACK</a>
+    </form>
     </div>
 </body>
 

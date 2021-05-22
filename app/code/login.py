@@ -140,6 +140,7 @@ def result():
 
         print("created")
         if(student):    
+            print('entered')
             global person
             session["id"] = student['admin_id']
             person["email"] = student["admin_username"]
@@ -149,9 +150,8 @@ def result():
             if(person["user"] == 'provider'):
                 return redirect(url_for('provider_home'))
             elif(person["user"] == 'admin'):
-                return redirect(url_for('login'))
-            else:
-                return Response("<h1> Admin</h1>")
+                print('admin')
+                return redirect(url_for('admin_home'))
       
         else:
             flash("Invalid password and Username")  
