@@ -1,15 +1,10 @@
 <!DOCTYPE html>  
 <html>  
- <head>  
-  <title>Insert View Data Through Bootstrap Modal using Python Flask and Jquery Ajax MysqlDB</title>  
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />  
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>  
- </head>  
- <body>  
+    {% include 'headers/admin_header.html' %}
+
   <br /><br />  
   <div class="container" style="width:700px;">  
-   <h3 align="center">Insert View Data Through Bootstrap Modal using Python Flask and Jquery Ajax MysqlDB</h3>  
+   <h3 align="center">User Details</h3>  
    <br />   
    <div class="table-responsive">
     <div align="right">
@@ -19,13 +14,25 @@
     <div id="employee_table">
      <table class="table table-bordered">
       <tr>
-       <th width="70%">Employee Name</th>  
+        <th width="70%">Profile</th> 
+
+       <th width="70%">User ID</th> 
+       <th width="50%">User Name</th>  
+       <th width="50%">Rollno</th>  
+       <th width="50%">Department</th>  
+       <th width="50%">Email ID</th>  
+
        <th width="30%">View</th>
       </tr>
       {% for row in employee %}
       <tr>
+       <td><img src="{{row.user_profile}}"></td>
+       <td>{{row.user_id}}</td>
        <td>{{row.name}}</td>
-       <td><input type="button" name="view" value="view" id="{{row.user_id}}" class="btn btn-info btn-xs view_data" /></td>
+       <td>{{row.rollno}}</td>
+       <td>{{row.department}}</td>
+       <td>{{row.email_id}}</td>
+       <td><input type="button" name="view" value="view" id="{{row.user_id}}" class="btn btn-info btn-xs view_data" />&nbsp;&nbsp;<input type="button" name="delete" value="block" id="{{row.user_id}}" class="btn btn-danger btn-xs view_data" /></td>
       </tr>
       {% endfor %}
      </table>
@@ -77,30 +84,43 @@
   <div class="modal-content">
    <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">×</button>
-    <h4 class="modal-title">Employee Details</h4>
+    <h4 class="modal-title">User Details</h4>
    </div>
    <div class="modal-body">
       <div class="table-responsive">  
         <table class="table table-bordered">
+           
+        <tr>  
+            <td width="30%"><label>User_id</label></td>  
+            <td width="70%"><input type="text" class="form-control" id="view_id"></td>  
+        </tr>
         <tr>  
             <td width="30%"><label>Name</label></td>  
             <td width="70%"><input type="text" class="form-control" id="view_name"></td>  
         </tr>
         <tr>  
-            <td width="30%"><label>Address</label></td>  
-            <td width="70%"><input type="text" class="form-control" id="view_address"></td>  
+            <td width="30%"><label>Roll no</label></td>  
+            <td width="70%"><input type="text" class="form-control" id="view_rollno"></td>  
         </tr>
         <tr>  
-            <td width="30%"><label>Gender</label></td>  
-            <td width="70%"><input type="text" class="form-control" id="view_gender"></td>  
+            <td width="30%"><label>Department</label></td>  
+            <td width="70%"><input type="text" class="form-control" id="view_department"></td>  
         </tr>
         <tr>  
-            <td width="30%"><label>Designation</label></td>  
-            <td width="70%"><input type="text" class="form-control" id="view_designation"></td>  
+            <td width="30%"><label>Email ID</label></td>  
+            <td width="70%"><input type="text" class="form-control" id="view_emailid"></td>  
         </tr>
         <tr>  
-            <td width="30%"><label>Age</label></td>  
-            <td width="70%"><input type="text" class="form-control" id="view_age"></td>  
+            <td width="30%"><label>Mobile</label></td>  
+            <td width="70%"><input type="text" class="form-control" id="view_mobile"></td>  
+        </tr>
+        <tr>  
+            <td width="30%"><label>user_type</label></td>  
+            <td width="70%"><input type="text" class="form-control" id="view_usert_type"></td>  
+        </tr>
+        <tr>  
+            <td width="30%"><label>Account Status</label></td>  
+            <td width="70%"><input type="text" class="form-control" id="view_account_status"></td>  
         </tr>
     </table></div>
    </div>
@@ -156,11 +176,15 @@ $(document).ready(function(){
    success:function(data){
     $('#dataModal').modal('show');
     var data_rs = JSON.parse(data);
-    $('#view_name').val(data_rs[0]['emp_name']);
-    $('#view_address').val(data_rs[0]['address']);
-    $('#view_gender').val(data_rs[0]['gender']);
-    $('#view_designation').val(data_rs[0]['designation']);
-    $('#view_age').val(data_rs[0]['age']);
+    $('#view_id').val(data_rs[0]['Id']);
+    $('#view_name').val(data_rs[0]['name']);
+    $('#view_rollno').val(data_rs[0]['rollno']);
+    $('#view_department').val(data_rs[0]['department']);
+    $('#view_emailid').val(data_rs[0]['emailid']);
+    $('#view_mobile').val(data_rs[0]['mobile']);
+    $('#view_usert_type').val(data_rs[0]['user_type']);
+    $('#view_account_status').val(data_rs[0]['account_status']);
+
    }
   });
  });

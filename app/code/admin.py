@@ -40,16 +40,18 @@ def select():
     if request.method == 'POST': 
         employee_id = request.form['employee_id']
         print(employee_id)      
-        result = cur.execute("SELECT * FROM tbl_employee WHERE id = %s", [employee_id])
+        result = cur.execute("SELECT * FROM user WHERE user_id = %s", [employee_id])
         rsemployee = cur.fetchall()
         employeearray = []
         for rs in rsemployee:
             employee_dict = {
-                    'Id': rs['id'],
-                    'emp_name': rs['name'],
-                    'address': rs['address'],
-                    'gender': rs['gender'],
-                    'designation': rs['designation'],
-                    'age': rs['age']}
+                    'Id': rs['user_id'],
+                    'name': rs['name'],
+                    'rollno': rs['rollno'],
+                    'department': rs['department'],
+                    'emailid': rs['email_id'],
+                    'mobile': rs['mobile'],
+                    'user_type': rs['user_type'],
+                    'account_status': rs['account_status']}
             employeearray.append(employee_dict)
         return json.dumps(employeearray)
