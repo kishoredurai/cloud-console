@@ -1,8 +1,7 @@
-from flask import Flask, flash, redirect, render_template, request, session, abort, url_for,Response    
+from flask import Flask, flash, redirect, render_template, request, session, abort, url_for,Response,jsonify, json
 from flask_mysqldb import MySQL
 from datetime import date
 from apscheduler.schedulers.background import BackgroundScheduler
-import json
 
 from authlib.integrations.flask_client import OAuth
 import re
@@ -11,7 +10,6 @@ import schedule
 import time,atexit
 import os
 import MySQLdb.cursors
-import webbrowser 
 
 ## mail sender
 import smtplib, ssl
