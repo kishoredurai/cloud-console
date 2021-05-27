@@ -48,12 +48,18 @@ def google_authorize():
         print(domain)
         
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM user where email_id=%s and account_status="yes"  LIMIT 1',[email])
+        cursor.execute('SELECT * FROM user where email_id=%s LIMIT 1',[email])
         student = cursor.fetchone()
         #print(student)
     
   
         if(student):
+
+            if(student['account_status']=='no'):
+                return redirect(url_for('login'))
+            
+
+
         
             global person
             session["id"] = student['user_id']
