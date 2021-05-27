@@ -55,3 +55,23 @@ def select():
                     'account_status': rs['account_status']}
             employeearray.append(employee_dict)
         return json.dumps(employeearray)
+
+
+@app.route('/user/update', methods=['GET', 'POST'])
+def admin_user_update():   
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    if request.method == 'POST':
+        if request.form.get("block"):
+            result = request.form  # Get the data
+            user_id = result["block"]
+            cur.execute("update user set account_status='no' where user_id=%s",[user_id])
+            mysql.connection.commit()
+            return redirect(url_for('main'))
+
+
+        if request.form.get("unblock"):
+            result = request.form  # Get the data
+            user_id = result["unblock"]
+            cur.execute("update user set account_status='yes' where user_id=%s",[user_id])
+            mysql.connection.commit()
+            return redirect(url_for('main'))
