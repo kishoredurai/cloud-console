@@ -5,20 +5,19 @@ from app import *
 def admin_home():
     if not session.get("id") is None and person["user"] == 'admin':
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        account=cursor.execute('SELECT COUNT(*) FROM database_users')
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        sas=cursor.execute('SELECT COUNT(*) FROM database_users where db_status="Active"')
-        return render_template("admin/admin_home.html", email=person["email"], name=person["name"],data=account,ac=sas)
-
+        return render_template("admin/admin_home.html", email=person["email"], name=person["name"])
     else:
         return redirect(url_for('login'))
 
-@app.route('/admin/test')
+@app.route('/admin/user')
 def main(): 
-    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    result = cur.execute("SELECT * FROM `user`")
-    employee = cur.fetchall()   
-    return render_template('admin/admin_test.html', employee=employee)
+    if not session.get("id") is None and person["user"] == 'admin':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT * FROM `user`")
+        employee = cursor.fetchall()   
+        return render_template('admin/admin_user.html', employee=employee)
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/insert', methods=['GET', 'POST'])
 def insert():   
@@ -59,19 +58,22 @@ def select():
 
 @app.route('/user/update', methods=['GET', 'POST'])
 def admin_user_update():   
-    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    if request.method == 'POST':
-        if request.form.get("block"):
-            result = request.form  # Get the data
-            user_id = result["block"]
-            cur.execute("update user set account_status='no' where user_id=%s",[user_id])
-            mysql.connection.commit()
-            return redirect(url_for('main'))
+    
+    if not session.get("id") is None and person["user"] == 'admin':
+
+        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        if request.method == 'POST':
+            if request.form.get("block"):
+                result = request.form  # Get the data
+                user_id = result["block"]
+                cur.execute("update user set account_status='no' where user_id=%s",[user_id])
+                mysql.connection.commit()
+                return redirect(url_for('main'))
 
 
-        if request.form.get("unblock"):
-            result = request.form  # Get the data
-            user_id = result["unblock"]
-            cur.execute("update user set account_status='yes' where user_id=%s",[user_id])
-            mysql.connection.commit()
-            return redirect(url_for('main'))
+            if request.form.get("unblock"):
+                result = request.form  # Get the data
+                user_id = result["unblock"]
+                cur.execute("update user set account_status='yes' where user_id=%s",[user_id])
+                mysql.connection.commit()
+                return redirect(url_for('main'))

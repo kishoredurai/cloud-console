@@ -9,6 +9,8 @@ def login():
             return redirect(url_for('home'))
         elif(person["user"] == 'provider'):
             return redirect(url_for('provider_home'))
+        elif(person["user"] == 'admin'):
+            return redirect(url_for('admin_home'))
         else:
             session.pop("id", None)
             return redirect(url_for('login'))
@@ -138,7 +140,6 @@ def result():
         cursor.execute('SELECT * FROM admin where admin_username=%s and admin_password=%s LIMIT 1',[email,base64_message])
         student = cursor.fetchone()
 
-        print("created")
         if(student):    
             print('entered')
             global person
@@ -160,6 +161,8 @@ def result():
     else:
         if not session.get("id") is None and person["user"] == 'provider':
             return redirect(url_for('provider_home'))
+        elif not session.get("id") is None and person["user"] == 'admin':
+            return redirect(url_for('admin_home'))
         else:
             return redirect(url_for('login'))
 
