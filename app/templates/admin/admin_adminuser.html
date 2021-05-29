@@ -105,49 +105,34 @@
                     <div class="table-responsive">
                         <table class="table table-bordered">
 
-                            <tr>
-                                <td width="30%"><label>User_id</label></td>
-                                <td width="70%"><input type="text" name='user_id' class="form-control" id="view_id">
-                                </td>
-                            </tr>
+                            <input type="hidden" name='id' class="form-control" id="view_id"></td>
+
                             <tr>
                                 <td width="30%"><label>Name</label></td>
                                 <td width="70%"><input type="text" name='name' class="form-control" id="view_name"></td>
                             </tr>
                             <tr>
-                                <td width="30%"><label>Roll no</label></td>
-                                <td width="70%"><input type="text" name='rollno' class="form-control" id="view_rollno">
+                                <td width="30%"><label>User Name</label></td>
+                                <td width="70%"><input type="text" name='username' class="form-control" id="view_rollno">
                                 </td>
                             </tr>
                             <tr>
-                                <td width="30%"><label>Department</label></td>
-                                <td width="70%"><input type="text" name='dept' class="form-control"
+                                <td width="30%"><label>Password</label></td>
+                                <td width="70%"><input type="text" name='password' class="form-control"
                                         id="view_department"></td>
                             </tr>
                             <tr>
-                                <td width="30%"><label>Email ID</label></td>
-                                <td width="70%"><input type="text" name='emailid' class="form-control"
-                                        id="view_emailid"></td>
+                                <td width="30%"><label>User_Type</label></td>
+                                <td width="70%"><input type="text" name='user_type' class="form-control"
+                                        id="view_emailid" disabled></td>
                             </tr>
-                            <tr>
-                                <td width="30%"><label>Mobile</label></td>
-                                <td width="70%"><input type="text" name='mobile' class="form-control" id="view_mobile">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="30%"><label>user_type</label></td>
-                                <td width="70%"><input type="text" name='user' class="form-control"
-                                        id="view_usert_type"></td>
-                            </tr>
-                            <tr>
-                                <td width="30%"><label>Account Status</label></td>
-                                <td width="70%"><input type="text" class="form-control" id="view_account_status"></td>
-                            </tr>
+                            
 
                         </table>
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <input type="submit" name="update" id="insert" value="update" class="btn btn-success" />
 
 
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -183,27 +168,27 @@
         });
 
 
-        // $('#update_form').on("submit", function (event) {
-        //     event.preventDefault();
-        //     if ($('#view_id').val() == "") {
-        //         alert("Name is required");
-        //     } else {
-        //         $.ajax({
-        //             url: "/user/update",
-        //             method: "POST",
-        //             data: $('#update_form').serialize(),
-        //             beforeSend: function () {
-        //                 $('#update').val("Inserting");
-        //             },
-        //             success: function (data) {
-        //                 $('#add_data_Modal').modal('hide');
-        //                 if (data == 'success') {
-        //                     window.location.href = "/admin/test";
-        //                 }
-        //             }
-        //         });
-        //     }
-        // });
+        $('#update_form').on("submit", function (event) {
+            event.preventDefault();
+            if ($('#view_name').val() == "") {
+                alert("Name is required");
+            } else {
+                $.ajax({
+                    url: "/admin/admin_user/updates",
+                    method: "POST",
+                    data: $('#update_form').serialize(),
+                    beforeSend: function () {
+                        $('#update').val("Inserting");
+                    },
+                    success: function (data) {
+                        $('#add_data_Modal').modal('hide');
+                        if (data == 'success') {
+                            window.location.href = "/admin/admin_user";
+                        }
+                    }
+                });
+            }
+        });
 
         $(document).on('click', '.view_data', function () {
             var employee_id = $(this).attr("id");
@@ -217,6 +202,7 @@
                     $('#dataModal').modal('show');
                     var data_rs = JSON.parse(data);
                     $('#view_id').val(data_rs[0]['Id']);
+
                     $('#view_name').val(data_rs[0]['name']);
                     $('#view_rollno').val(data_rs[0]['username']);
                     $('#view_department').val(data_rs[0]['password']);

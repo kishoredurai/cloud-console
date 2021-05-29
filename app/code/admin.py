@@ -92,7 +92,7 @@ def admin_user():
 
 
 @app.route('/admin/admin_user/insert', methods=['GET', 'POST'])
-def admin_user_insert():   
+def admin_adminuser_insert():   
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     if request.method == 'POST': 
         name = request.form['name']
@@ -111,7 +111,7 @@ def admin_user_insert():
 
 
 @app.route('/admin/admin_user/select', methods=['GET', 'POST'])
-def select():   
+def admin_adminuser_select():   
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     if request.method == 'POST': 
         admin_id = request.form['admin_id']
@@ -134,7 +134,7 @@ def select():
 
 
 @app.route('/admin/admin_user/update', methods=['GET', 'POST'])
-def admin_user_update():   
+def admin_adminuser_update():   
     
     if not session.get("id") is None and person["user"] == 'admin':
 
@@ -145,7 +145,7 @@ def admin_user_update():
                 user_id = result["block"]
                 cur.execute("update admin set admin_account_status='no' where admin_id=%s",[user_id])
                 mysql.connection.commit()
-                return redirect(url_for('main'))
+                return redirect(url_for('admin_user'))
 
 
             if request.form.get("unblock"):
@@ -153,7 +153,7 @@ def admin_user_update():
                 user_id = result["unblock"]
                 cur.execute("update admin set admin_account_status='yes' where admin_id=%s",[user_id])
                 mysql.connection.commit()
-                return redirect(url_for('main'))
+                return redirect(url_for('admin_user'))
 
 
             if request.form.get("delete"):
@@ -161,4 +161,21 @@ def admin_user_update():
                 user_id = result["delete"]
                 cur.execute("delete from admin where admin_id=%s",[user_id])
                 mysql.connection.commit()
-                return redirect(url_for('main'))
+                return redirect(url_for('admin_user'))
+
+
+
+@app.route('/admin/admin_user/updates', methods=['GET', 'POST'])
+def adminuser_updates():   
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    if request.method == 'POST': 
+        id = request.form['id']
+        print('test:'+id)
+        name = request.form['name']
+        username = request.form['username']
+        password = request.form['password']
+        user_type = request.form['user_type']
+        cur.execute("update admin set admin_name INTO tbl_employee (name, address, gender, designation, age) VALUES (%s, %s, %s, %s, %s)",[name, address, gender, designation, age])
+        mysql.connection.commit()
+        cur.close()
+    return jsonify('success')
