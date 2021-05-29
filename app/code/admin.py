@@ -77,3 +77,88 @@ def admin_user_update():
                 cur.execute("update user set account_status='yes' where user_id=%s",[user_id])
                 mysql.connection.commit()
                 return redirect(url_for('main'))
+
+
+
+@app.route('/admin/admin_user')
+def admin_user(): 
+    if not session.get("id") is None and person["user"] == 'admin':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT * FROM `admin`")
+        admin = cursor.fetchall()   
+        return render_template('admin/admin_adminuser.html', admin=admin)
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/admin/admin_user/insert', methods=['GET', 'POST'])
+def admin_user_insert():   
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    if request.method == 'POST': 
+        name = request.form['name']
+        username = request.form['user_name']
+        password = request.form['password']
+        user_type = request.form['user_type']
+        message = password
+        message_bytes = message.encode('ascii')
+        base64_bytes = base64.b64encode(message_bytes)
+        base64_message = base64_bytes.decode('ascii')
+
+        cur.execute("INSERT INTO admin (admin_name, admin_username, admin_password, admin_user_type) VALUES (%s, %s, %s, %s)",[name, username, base64_message, user_type])
+        mysql.connection.commit()
+    return jsonify('success')
+
+
+
+@app.route('/admin/admin_user/select', methods=['GET', 'POST'])
+def select():   
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    if request.method == 'POST': 
+        admin_id = request.form['admin_id']
+        print(admin_id)      
+        result = cur.execute("SELECT * FROM admin WHERE admin_id = %s", [admin_id])
+        rsemployee = cur.fetchall()
+        employeearray = []
+        for rs in rsemployee:
+            employee_dict = {
+                    'Id': rs['admin_id'],
+                    'name': rs['admin_name'],
+                    'username': rs['admin_username'],
+                    'password': rs['admin_password'],
+                    'user_type': rs['admin_user_type']}
+            employeearray.append(employee_dict)
+        return json.dumps(employeearray)
+
+
+
+
+
+@app.route('/admin/admin_user/update', methods=['GET', 'POST'])
+def admin_user_update():   
+    
+    if not session.get("id") is None and person["user"] == 'admin':
+
+        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        if request.method == 'POST':
+            if request.form.get("block"):
+                result = request.form  # Get the data
+                user_id = result["block"]
+                cur.execute("update admin set admin_account_status='no' where admin_id=%s",[user_id])
+                mysql.connection.commit()
+                return redirect(url_for('main'))
+
+
+            if request.form.get("unblock"):
+                result = request.form  # Get the data
+                user_id = result["unblock"]
+                cur.execute("update admin set admin_account_status='yes' where admin_id=%s",[user_id])
+                mysql.connection.commit()
+                return redirect(url_for('main'))
+
+
+            if request.form.get("delete"):
+                result = request.form  # Get the data
+                user_id = result["delete"]
+                cur.execute("delete from admin where admin_id=%s",[user_id])
+                mysql.connection.commit()
+                return redirect(url_for('main'))

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+{% include 'headers/admin_header.html' %}
+
+<br /><br />
+<div class="container" style="width:700px;">
+    <h3 align="center">User Details</h3>
+    <br />
+    <div class="table-responsive">
+        <div align="right">
+            <button type="button" name="age" id="age" data-toggle="modal" data-target="#add_data_Modal"
+                class="btn btn-warning">Add</button>
+        </div>
+        <br />
+        <div id="employee_table">
+            <form method="post" action="/admin/admin_user/update">
+
+                <table class="table table-bordered">
+                    <tr>
+
+                        <th width="70%">Name</th>
+                        <th width="50%">username</th>
+                        <th width="50%">Account type</th>
+                        <th width="50%">Account Status</th>
+                        <th width="30%">Update</th>
+                        <th width="30%">Account</th>
+                        <th width="30%">Delete</th>
+
+                    </tr>
+                    {% for row in admin %}
+                    <tr>
+                        <td>{{row.admin_name}}</td>
+                        <td>{{row.admin_username}}</td>
+                        <td>{{row.admin_user_type}}</td>
+                        <td>{{row.admin_account_status}}</td>
+                        <td><input type="button" name="view" value="view" id="{{row.admin_id}}" class="btn btn-info btn-xs view_data" /></td>
+                        <td>
+                            <!-- <input type="button" name="view" value="view" id="{{row.user_id}}" class="btn btn-info btn-xs view_data" />&nbsp;&nbsp; -->
+                            {% if row.admin_account_status == "yes" %}
+                            <button type="submit" name="block" value="{{row.admin_id}}" id="{{row.admin_id}}"
+                                class="btn btn-danger btn-xs ">BLOCK</button>
+                        {% endif %}
+                        {% if row.admin_account_status == "no" %}
+                        <button type="submit" name="unblock" value="{{row.admin_id}}" id="{{row.admin_id}}"
+                            class="btn btn-success btn-xs" >UNBLOCK</button>
+                        {% endif %}
+                        </td>
+                        <td><button type="submit" name="delete" value="{{row.admin_id}}" id="{{row.admin_id}}"
+                            class="btn btn-success btn-xs" >DELETE</button></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </form>
+
+        </div>
+    </div>
+
+
+</div>
+<div id="add_data_Modal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Create new Admin User</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="insert_form">
+                    <label>Enter Admin Name</label>
+                    <input type="text" name="name" id="name" class="form-control" />
+                    <br />
+                    <label>Enter Admin User Name</label>
+                    <input type="text" name="user_name" id="name" class="form-control" />
+                    <br />
+                    <label>Enter Admin Password</label>
+                    <input type="text" name="password" id="name" class="form-control" />
+                    <br />
+                    <label>Admin User Type</label>
+                    <select name="user_type" id="gender" class="form-control">
+                        <option value="provider">provider</option>
+                        <option value="admin">admin</option>
+                    </select>
+                    <br />
+                    <input type="submit" name="insert" id="insert" value="Insert" class="btn btn-success" />
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="dataModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">User Details</h4>
+            </div>
+            <form method="post" id="update_form">
+
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+
+                            <tr>
+                                <td width="30%"><label>User_id</label></td>
+                                <td width="70%"><input type="text" name='user_id' class="form-control" id="view_id">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%"><label>Name</label></td>
+                                <td width="70%"><input type="text" name='name' class="form-control" id="view_name"></td>
+                            </tr>
+                            <tr>
+                                <td width="30%"><label>Roll no</label></td>
+                                <td width="70%"><input type="text" name='rollno' class="form-control" id="view_rollno">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%"><label>Department</label></td>
+                                <td width="70%"><input type="text" name='dept' class="form-control"
+                                        id="view_department"></td>
+                            </tr>
+                            <tr>
+                                <td width="30%"><label>Email ID</label></td>
+                                <td width="70%"><input type="text" name='emailid' class="form-control"
+                                        id="view_emailid"></td>
+                            </tr>
+                            <tr>
+                                <td width="30%"><label>Mobile</label></td>
+                                <td width="70%"><input type="text" name='mobile' class="form-control" id="view_mobile">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%"><label>user_type</label></td>
+                                <td width="70%"><input type="text" name='user' class="form-control"
+                                        id="view_usert_type"></td>
+                            </tr>
+                            <tr>
+                                <td width="30%"><label>Account Status</label></td>
+                                <td width="70%"><input type="text" class="form-control" id="view_account_status"></td>
+                            </tr>
+
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#insert_form').on("submit", function (event) {
+            event.preventDefault();
+            if ($('#name').val() == "") {
+                alert("Name is required");
+            } else {
+                $.ajax({
+                    url: "/admin/admin_user/insert",
+                    method: "POST",
+                    data: $('#insert_form').serialize(),
+                    beforeSend: function () {
+                        $('#insert').val("Inserting");
+                    },
+                    success: function (data) {
+                        $('#add_data_Modal').modal('hide');
+                        if (data == 'success') {
+                            window.location.href = "/admin/admin_user";
+                        }
+                    }
+                });
+            }
+        });
+
+
+        // $('#update_form').on("submit", function (event) {
+        //     event.preventDefault();
+        //     if ($('#view_id').val() == "") {
+        //         alert("Name is required");
+        //     } else {
+        //         $.ajax({
+        //             url: "/user/update",
+        //             method: "POST",
+        //             data: $('#update_form').serialize(),
+        //             beforeSend: function () {
+        //                 $('#update').val("Inserting");
+        //             },
+        //             success: function (data) {
+        //                 $('#add_data_Modal').modal('hide');
+        //                 if (data == 'success') {
+        //                     window.location.href = "/admin/test";
+        //                 }
+        //             }
+        //         });
+        //     }
+        // });
+
+        $(document).on('click', '.view_data', function () {
+            var employee_id = $(this).attr("id");
+            $.ajax({
+                url: "/admin/admin_user/select",
+                method: "POST",
+                data: {
+                    admin_id: employee_id
+                },
+                success: function (data) {
+                    $('#dataModal').modal('show');
+                    var data_rs = JSON.parse(data);
+                    $('#view_id').val(data_rs[0]['Id']);
+                    $('#view_name').val(data_rs[0]['name']);
+                    $('#view_rollno').val(data_rs[0]['username']);
+                    $('#view_department').val(data_rs[0]['password']);
+                    $('#view_emailid').val(data_rs[0]['user_type']);
+
+                }
+            });
+        });
+    });
+</script>
+</body>
+
+</html>
