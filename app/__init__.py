@@ -242,6 +242,125 @@ def Postegsql_db_remove(data):
 
 
 
+####################### provider and admin db create and privilleges ############################
+
+
+
+
+def SQL_db_create_check(db_id):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)    
+    cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_id=%s',[db_id])
+    data = cursor.fetchone() 
+    cursor.execute('SELECT * FROM mysql.user where user=%s',[data['rollno']])
+    datas = cursor.fetchall()
+    if not datas:
+        try:
+            sqlCreateUser = "CREATE USER '%s'@'localhost' IDENTIFIED BY '%s';"%(data['rollno'],data['rollno'])
+            cursor.execute(sqlCreateUser)
+            cursor.execute('update db_login_user set db_user_status = "Active" and where db_software = "SQL" and db_id=%s;',[data['user_id']])
+            mysql.connection.commit() 
+        except Exception as Ex:
+            print("Error creating MySQL User: %s"%(Ex))   
+
+    ## Database create ##
+    try:
+        sqlCreateUser = "CREATE DATABASE %s;"%(data['db_name'])
+        cursor.execute(sqlCreateUser)
+        print('db created')
+    except Exception as Ex:
+        print("Error creating MySQL User: %s"%(Ex))
+    
+    email(data['email_id'],'Account Created','sql db created')
+
+    ## check database create date
+
+    today = date.today()
+    if(data["start_date"] <= today):
+
+        print("created")
+        SQL_privilleges(data)
+        cursor.execute('update database_users set db_status = "Active" , Request_status = "Approved" where db_id=%s;', [db_id])
+        mysql.connection.commit()  
+    else:
+        print("not created") 
+        cursor.execute('update database_users set db_status = "Deactive" , Request_status = "Approved" where db_id=%s;', [db_id])
+        mysql.connection.commit() 
+    
+
+
+
+def postgre_db_create_check(db_id):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor) 
+    cur = conn.cursor()   
+    cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_id=%s',[db_id])
+    data = cursor.fetchone() 
+    cur.execute('SELECT usename FROM pg_catalog.pg_user where usename = %s',[data['rollno']])
+    datas = cur.fetchone()
+    if not datas:
+        try:
+            query = "CREATE USER "'"'+data['rollno']+'"'" LOGIN PASSWORD '"+data['rollno']+"';"
+            cur.execute(sql.SQL(query).format())
+            cursor.execute('update db_login_user set db_user_status = "Active" and where db_software = "PostgreSQL" and db_id=%s;',[data['user_id']])
+            mysql.connection.commit() 
+        except Exception as Ex:
+            print("Error creating MySQL User: %s"%(Ex))   
+
+    ## Database create ##
+    try:
+        cur.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(data['db_name'])))
+        print('db created')
+    except Exception as Ex:
+        print("Error creating MySQL User: %s"%(Ex))
+    
+    email(data['email_id'],'Account Created','Posteges sql')
+    ## check database create date
+
+    today = date.today()
+    if(data["start_date"] <= today):
+
+        print("created")
+        postgre_privilleges(data)
+        cursor.execute('update database_users set db_status = "Active" , Request_status = "Approved" where db_id=%s;', [db_id])
+        mysql.connection.commit()  
+    else:
+        print("not created") 
+        cursor.execute('update database_users set db_status = "Deactive" , Request_status = "Approved" where db_id=%s;', [db_id])
+        mysql.connection.commit() 
+
+
+
+
+
+
+
+
+############################  Database Privileges  #####################################
+
+
+def SQL_privilleges(data):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM db_login_user where db_software = "SQL" and user_id=%s',[data['user_id']])
+    db_user_detail = cursor.fetchone()    
+    try:
+        sqlCreateUser = "GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost' IDENTIFIED BY '%s';"%(data['db_name'],data['rollno'],db_user_detail['user_id'])
+        cursor.execute(sqlCreateUser)
+        print('grant privileges')
+    except Exception as Ex:
+        print("Error creating MySQL User: %s"%(Ex))
+
+
+def postgre_privilleges(data):
+    cur = conn.cursor()
+    try:
+        query = "GRANT ALL PRIVILEGES ON DATABASE "+data['db_name']+" to "'"'+data['rollno']+'"'";"
+        cur.execute(sql.SQL(query).format())
+        
+        print('grant privileges')
+    except Exception as Ex:
+        print("Error creating postgre User: %s"%(Ex))
+
+
+
 
 
 

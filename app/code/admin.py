@@ -176,3 +176,64 @@ def adminuser_updates():
         cur.execute("update admin set admin_name=%s , admin_username=%s , admin_password=%s where admin_id=%s;",[name, username, password, id])
         mysql.connection.commit()
     return jsonify('success')
+
+
+######################  database details ##############################
+
+@app.route("/admin/database")
+def admin_database():
+    if not session.get("id") is None and person["user"] == 'admin':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id ORDER BY applied_date DESC')
+        account = cursor.fetchall()
+        return render_template("admin/admin_database.html", email=person["email"], name=person["name"], value=account)
+
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route("/admin/database/details", methods=["POST", "GET"])
+def admin_database_details():
+    if not session.get("id") is None and person["user"] == 'admin':
+                
+        if request.method == "POST":
+            if request.form.get("submit_a"):
+                result = request.form  # Get the data
+                ss = result["submit_a"]
+                cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+                cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_id=%s',[ss])
+                data = cursor.fetchone()  
+                return render_template("admin/admin_db_approve.html",email=person["email"], name=person["name"],data=data)
+
+
+            if request.form.get("approve"):
+                result = request.form  # Get the data
+                ss = result["approve"]
+                id=session.get("id")
+                remark = result["provider_remark"]
+                cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+                cursor.execute('SELECT * FROM database_users where db_id=%s',[ss])
+                data = cursor.fetchone() 
+                if(data['db_software']=='SQL'):
+                    SQL_db_create_check(ss)
+                elif(data['db_software']=='PostgreSQL'):
+                    postgre_db_create_check(ss)
+
+                cursor.execute('insert into db_approval_status(db_id, admin_id, update_status, provider_remark) values(%s,%s,"Approved",%s)', [ss,id,remark])
+                mysql.connection.commit()
+                return redirect(url_for('database'))
+    
+            if request.form.get("reject"):
+                result = request.form  # Get the data
+                ss = result["reject"]
+                id=session.get("id")
+                remark = result["provider_remark"]
+                cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+                cursor.execute('insert into db_approval_status(db_id, admin_id, update_status, provider_remark) values(%s,%s,"Rejected",%s)', [ss,id,remark])
+                mysql.connection.commit()
+                cursor.execute('update database_users set db_status = "Deactive" , Request_status = "Rejected" where db_id=%s;', [ss])
+                mysql.connection.commit()            
+                return redirect(url_for('database'))
+
+
+        
