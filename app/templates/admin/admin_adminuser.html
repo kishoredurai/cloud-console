@@ -104,8 +104,10 @@
                 <div class="modal-body">
                     <div class="table-responsive">
                         <table class="table table-bordered">
-
-                            <input type="hidden" name='id' class="form-control" id="view_id"></td>
+                            <tr>
+                                <td width="30%"><label>ID</label></td>
+                                <td width="70%"><input type="text" name='id' class="form-control" id="view_id" ></td>
+                            </tr>
 
                             <tr>
                                 <td width="30%"><label>Name</label></td>
@@ -132,7 +134,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" name="update" id="insert" value="update" class="btn btn-success" />
+                    <input type="submit" name="update" id="update" value="update" class="btn btn-success" />
 
 
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -147,10 +149,7 @@
     $(document).ready(function () {
         $('#insert_form').on("submit", function (event) {
             event.preventDefault();
-            if ($('#name').val() == "") {
-                alert("Name is required");
-            } else {
-                $.ajax({
+            $.ajax({
                     url: "/admin/admin_user/insert",
                     method: "POST",
                     data: $('#insert_form').serialize(),
@@ -164,21 +163,19 @@
                         }
                     }
                 });
-            }
+            
         });
 
 
         $('#update_form').on("submit", function (event) {
             event.preventDefault();
-            if ($('#view_name').val() == "") {
-                alert("Name is required");
-            } else {
+         
                 $.ajax({
-                    url: "/admin/admin_user/updates",
+                    url: "/admin/admin_user/change",
                     method: "POST",
                     data: $('#update_form').serialize(),
                     beforeSend: function () {
-                        $('#update').val("Inserting");
+                        $('#update').val("Updating");
                     },
                     success: function (data) {
                         $('#add_data_Modal').modal('hide');
@@ -187,7 +184,7 @@
                         }
                     }
                 });
-            }
+            
         });
 
         $(document).on('click', '.view_data', function () {

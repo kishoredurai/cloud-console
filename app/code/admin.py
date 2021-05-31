@@ -165,17 +165,14 @@ def admin_adminuser_update():
 
 
 
-@app.route('/admin/admin_user/updates', methods=['GET', 'POST'])
+@app.route('/admin/admin_user/change', methods=['GET', 'POST'])
 def adminuser_updates():   
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     if request.method == 'POST': 
         id = request.form['id']
-        print('test:'+id)
         name = request.form['name']
         username = request.form['username']
-        password = request.form['password']
-        user_type = request.form['user_type']
-        cur.execute("update admin set admin_name INTO tbl_employee (name, address, gender, designation, age) VALUES (%s, %s, %s, %s, %s)",[name, address, gender, designation, age])
+        password = request.form['password']        
+        cur.execute("update admin set admin_name=%s , admin_username=%s , admin_password=%s where admin_id=%s;",[name, username, password, id])
         mysql.connection.commit()
-        cur.close()
     return jsonify('success')
