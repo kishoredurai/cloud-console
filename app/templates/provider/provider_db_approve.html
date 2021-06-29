@@ -1,4 +1,3 @@
-
 {% include 'headers/provider_template.html' %}
 <!-- 
 <!DOCTYPE html>
@@ -292,133 +291,188 @@
 
 
     <!-- Begin Page Content -->
-    <div class="container-fluid">  
-        
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-          <!-- Page Heading -->
-        <div class="container-fluid" style="width: 1251px;max-width: none;min-width: 0px;">
-            <h3 class="text-dark mb-4">Profile</h3>
-            <div class="row mb-3" style="margin-right: 0px;width: 0;margin-left: 0;">
-                <div class="col-lg-8">
-                    <div class="row mb-3 d-none">
-                        <div class="col">
-                            <div class="card text-white bg-primary shadow">
-                                <div class="card-body">
-                                    <div class="row mb-2">
-                                        <div class="col">
-                                            <p class="m-0">Peformance</p>
-                                            <p class="m-0"><strong>65.2%</strong></p>
-                                        </div>
-                                        <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
-                                    </div>
-                                    <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i>&nbsp;5% since last month</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                    <form action="/provider/database/details" method="POST">
+    <div class="container-fluid">
 
-                    <div class="row">
-                        <div class="col-xl-12 offset-xl-0" style="width: 833px;max-width: 172%;">
-                            <div class="card shadow mb-3" style="width: 1200px;margin-left: 16px;">
-                                <div class="card-header py-3">
-                                    <p class="text-primary m-0 font-weight-bold">User Settings</p>
-                                </div>
-                                <div class="card-body" style="width: 1200px;">
-                                        <div class="form-row">
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+        <!-- Page Heading -->
+        <form action="/provider/database/details" method="POST">
+
+        <div class="container-fluid" style="width: 1251px;max-width: none;min-width: 0px;">
+                <h3 class="text-dark mb-4">Profile</h3>
+                <div class="row mb-3" style="margin-right: 0px;width: 0;margin-left: 0;">
+                    <div class="col-lg-8">
+                        <div class="row mb-3 d-none">
+                            <div class="col">
+                                <div class="card text-white bg-primary shadow">
+                                    <div class="card-body">
+                                        <div class="row mb-2">
                                             <div class="col">
-                                                <div class="form-group"><label for="username"><strong>User Name</strong></label><input class="form-control" type="text" id="username" placeholder="user name" value="{{data.name}}" name="username" disabled></div>
+                                                <p class="m-0">Peformance</p>
+                                                <p class="m-0"><strong>65.2%</strong></p>
                                             </div>
-                                            <div class="col">
-                                                <div class="form-group"><label for="email"><strong>Email Address</strong></label><input class="form-control" type="email" id="email" placeholder="Email ID" value="{{data.email_id}}" name="email"></div>
-                                            </div>
+                                            <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
                                         </div>
-                                        <div class="form-row">
-                                            <div class="col">
-                                                <div class="form-group"><label for="first_name"><strong>Rollno</strong></label><input class="form-control" type="text" id="first_name" placeholder="Roll no" value="{{data.rollno}}" name="first_name"></div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="form-group"><label for="last_name"><strong>User Type</strong></label><input class="form-control" type="text" id="last_name" placeholder="User Type" value="{{data.user_type}}" name="last_name"></div>
-                                            </div>
-                                        </div>
-                                    <div class="form-group" style="margin: 4px;margin-top: 7px;"><button class="btn btn-primary btn-sm" type="submit">View Details</button></div>
-                                </div>
-                            </div>
-                            <div class="card" style="width: 1204px;margin-left: 16px;">
-                                <div class="card-header py-3">
-                                    <p class="text-primary m-0 font-weight-bold">Account Details</p>
-                                </div>
-                                <div class="card-body">
-                                        <div class="form-group"><label for="address"><strong>Databases&nbsp;</strong></label><input class="form-control" type="text" id="address" placeholder="Db software" value="{{data.db_software}}" name="address"></div>
-                                        <div class="form-row">
-                                            <div class="col">
-                                                <div class="form-group"><label for="city"><strong>Username</strong></label><input class="form-control" type="text" id="city" placeholder="Rollno" value="{{data.rollno}}" name="city"></div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="form-group"><label for="country"><strong>Password</strong></label><input class="form-control" type="text" id="country" placeholder="Password" value="{{data.db_password}}" name="country"></div>
-                                            </div>
-                                        </div>
+                                        <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i>&nbsp;5% since
+                                            last month</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="card shadow" style="width: 1200px;margin-top: 17px;margin-left: 16px;">
-                                <div class="card-header py-3">
-                                    <p class="text-primary m-0 font-weight-bold">Database Details</p>
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-xl-12 offset-xl-0" style="width: 833px;max-width: 172%;">
+                                <div class="card shadow mb-3" style="width: 1200px;margin-left: 16px;">
+                                    <div class="card-header py-3">
+                                        <p class="text-primary m-0 font-weight-bold">User Settings</p>
+                                    </div>
+                                    <div class="card-body" style="width: 1200px;">
+                                        <div class="form-row">
+                                            <div class="col">
+                                                <div class="form-group"><label for="username"><strong>User
+                                                            Name</strong></label><input class="form-control" type="text"
+                                                        id="username" placeholder="user name" value="{{data.name}}"
+                                                        name="username" disabled></div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group"><label for="email"><strong>Email
+                                                            Address</strong></label><input class="form-control"
+                                                        type="email" id="email" placeholder="Email ID"
+                                                        value="{{data.email_id}}" name="email"></div>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="col">
+                                                <div class="form-group"><label
+                                                        for="first_name"><strong>Rollno</strong></label><input
+                                                        class="form-control" type="text" id="first_name"
+                                                        placeholder="Roll no" value="{{data.rollno}}" name="first_name">
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group"><label for="last_name"><strong>User
+                                                            Type</strong></label><input class="form-control" type="text"
+                                                        id="last_name" placeholder="User Type"
+                                                        value="{{data.user_type}}" name="last_name"></div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="margin: 4px;margin-top: 7px;"><button
+                                                class="btn btn-primary btn-sm" type="submit">View Details</button></div>
+                                    </div>
                                 </div>
-                                <div class="card-body">
+                                <div class="card" style="width: 1204px;margin-left: 16px;">
+                                    <div class="card-header py-3">
+                                        <p class="text-primary m-0 font-weight-bold">Account Details</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group"><label
+                                                for="address"><strong>Databases&nbsp;</strong></label><input
+                                                class="form-control" type="text" id="address" placeholder="Db software"
+                                                value="{{data.db_software}}" name="address"></div>
                                         <div class="form-row">
                                             <div class="col">
-                                                <div class="form-group"><label for="city"><strong>Database Name</strong></label><input class="form-control" type="text" id="city" value="{{data.db_name}}" placeholder="Database Name" name="city"></div>
+                                                <div class="form-group"><label
+                                                        for="city"><strong>Username</strong></label><input
+                                                        class="form-control" type="text" id="city" placeholder="Rollno"
+                                                        value="{{data.rollno}}" name="city"></div>
                                             </div>
                                             <div class="col">
-                                                <div class="form-group"><label for="country"><strong>From Date</strong></label><input class="form-control" type="text" id="country" placeholder="From Date" value="{{data.start_date}}" name="country"></div>
+                                                <div class="form-group"><label
+                                                        for="country"><strong>Password</strong></label><input
+                                                        class="form-control" type="text" id="country"
+                                                        placeholder="Password" value="{{data.db_password}}"
+                                                        name="country"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card shadow" style="width: 1200px;margin-top: 17px;margin-left: 16px;">
+                                    <div class="card-header py-3">
+                                        <p class="text-primary m-0 font-weight-bold">Database Details</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-row">
+                                            <div class="col">
+                                                <div class="form-group"><label for="city"><strong>Database
+                                                            Name</strong></label><input class="form-control" type="text"
+                                                        id="city" value="{{data.db_name}}" placeholder="Database Name"
+                                                        name="city"></div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group"><label for="country"><strong>From
+                                                            Date</strong></label><input class="form-control" type="text"
+                                                        id="country" placeholder="From Date" value="{{data.start_date}}"
+                                                        name="country"></div>
                                             </div>
                                         </div>
                                         <div class="form-row">
                                             <div class="col">
-                                                <div class="form-group"><label for="city"><strong>Applied Date</strong></label><input class="form-control" type="text" id="city-1" placeholder="Los Angeles"  value="{{data.applied_date}}" name="city"></div>
+                                                <div class="form-group"><label for="city"><strong>Applied
+                                                            Date</strong></label><input class="form-control" type="text"
+                                                        id="city-1" placeholder="Los Angeles"
+                                                        value="{{data.applied_date}}" name="city"></div>
                                             </div>
                                             <div class="col">
-                                                <div class="form-group"><label for="country"><strong>To Date</strong></label><input class="form-control" type="text" id="country-1" placeholder="tp Date" value="{{data.end_date}}" name="country"></div>
+                                                <div class="form-group"><label for="country"><strong>To
+                                                            Date</strong></label><input class="form-control" type="text"
+                                                        id="country-1" placeholder="tp Date" value="{{data.end_date}}"
+                                                        name="country"></div>
                                             </div>
                                         </div>
-                                    <div class="col-md-6 col-xl-11" style="padding-left: 0px;width: 647.5px;margin-right: 44px;">
-                                            <div class="form-group"><label for="signature" style="margin-left: 1px;"><strong>Remark</strong><br></label><textarea class="form-control" id="signature" placeholder="{{data.user_remark}}" rows="4" name="signature" style="margin-right: 47px;"></textarea></div>
+                                        <div class="col-md-6 col-xl-11"
+                                            style="padding-left: 0px;width: 647.5px;margin-right: 44px;">
+                                            <div class="form-group"><label for="signature"
+                                                    style="margin-left: 1px;"><strong>Remark</strong><br></label><textarea
+                                                    class="form-control" id="signature"
+                                                    placeholder="{{data.user_remark}}" rows="4" name="signature"
+                                                    style="margin-right: 47px;"></textarea></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="card shadow mb-5" style="margin-left: 26px;padding-left: 0px;width: 1200px;margin-right: 14px;">
-                <div class="card-header py-3">
-                    <p class="text-primary m-0 font-weight-bold">Provider Details</p>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                                <div class="form-group"><label for="signature"><strong>Provider Remark</strong><br></label><textarea class="form-control" id="signature" rows="4" name="signature"></textarea></div>
+                <div class="card shadow mb-5"
+                    style="margin-left: 26px;padding-left: 0px;width: 1200px;margin-right: 14px;">
+                    <div class="card-header py-3">
+                        <p class="text-primary m-0 font-weight-bold">Provider Details</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group"><label for="signature"><strong>Provider
+                                            Remark</strong><br></label><textarea class="form-control" id="signature"
+                                        rows="4" name="provider_remark" required></textarea></div>
                                 <div class="form-group">
-                                    <div class="custom-control custom-switch"><input class="custom-control-input" type="checkbox" id="formCheck-1" required ><label class="custom-control-label" for="formCheck-1"><strong>Notify me about new replies</strong></label></div>
+                                    <div class="custom-control custom-switch"><input class="custom-control-input"
+                                            type="checkbox" id="formCheck-1" required><label
+                                            class="custom-control-label" for="formCheck-1"><strong>Notify me about new
+                                                replies</strong></label></div>
                                 </div>
                                 <div class="form-group">
                                     {% if  data.Request_status  != "Approved" and  data.Request_status  != "Rejected" %}
 
-                                    <button class="btn btn-success btn-sm" name="approve" type="submit">Approve</button>
-                                    <button class="btn btn-danger btn-sm"  name="reject"  type="submit">Reject</button>
+                                    <button class="btn btn-success btn-sm" name="approve" value="{{data.db_id}}"type="submit">Approve</button>
+                                    <button class="btn btn-danger btn-sm" name="reject" value="{{data.db_id}}" type="submit">Reject</button>
                                     {% endif %}
 
-                                    
-                                    <a href="/provider/database" class="btn btn-primary btn-sm" type="button" style="margin-left: 32px;padding-left: 18px;padding-right: 17px;">Close</a></div>
-                            </form>
+
+                                    <a href="/provider/database" class="btn btn-primary btn-sm" type="button"
+                                        style="margin-left: 32px;padding-left: 18px;padding-right: 17px;">Close</a>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
+        
+    </form>
+
     </div>
     <!-- /.container-fluid -->
 
@@ -528,24 +582,29 @@
                                 <input type="hidden" class="form-control" id="course_id" name="course_id">>
                                 <tr>
                                     <td width="30%"><label>Subject Name</label></td>
-                                    <td width="70%"><input type="text" class="form-control"  id="subject_name" disabled></td>
+                                    <td width="70%"><input type="text" class="form-control" id="subject_name" disabled>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td width="30%"><label>Course Name</label></td>
-                                    <td width="70%"><input type="text" class="form-control" name="course_name" id="course_name"></td>
+                                    <td width="70%"><input type="text" class="form-control" name="course_name"
+                                            id="course_name"></td>
                                 </tr>
                                 <tr>
                                     <td width="30%"><label>Course Grade</label></td>
-                                    <td width="70%"><input type="number" class="form-control" id="course_grade" disabled></td>
+                                    <td width="70%"><input type="number" class="form-control" id="course_grade"
+                                            disabled></td>
                                 </tr>
                                 <tr>
                                     <td width="30%"><label>Course Duration</label></td>
-                                    <td width="70%"><input type="number" class="form-control" name="course_duration" id="course_duration">
+                                    <td width="70%"><input type="number" class="form-control" name="course_duration"
+                                            id="course_duration">
                                     </td>
                                 </tr>
                                 <tr>
                                     <td width="30%"><label>No of Sessions</label></td>
-                                    <td width="70%"><input type="number" class="form-control" name="no_of_session" id="no_of_session"></td>
+                                    <td width="70%"><input type="number" class="form-control" name="no_of_session"
+                                            id="no_of_session"></td>
                                 </tr>
                                 <tr>
                                     <td width="30%"><label>Status</label></td>
@@ -556,7 +615,8 @@
                                 </tr>
                                 <tr>
                                     <td width="30%"><label>Course Description</label></td>
-                                    <td width="70%"><textarea type="text" class="form-control" name="course_description" id="course_description"></textarea>
+                                    <td width="70%"><textarea type="text" class="form-control" name="course_description"
+                                            id="course_description"></textarea>
                                     </td>
                                 </tr>
                             </table>
@@ -655,10 +715,13 @@
                                 $('#course_grade').val(data_rs[0]['course_grade']);
                                 $('#course_duration').val(data_rs[0]['course_duration']);
                                 $('#no_of_session').val(data_rs[0]['no_of_session']);
-                                document.getElementById("mySelect").value = data_rs[0]['status'];
+                                document.getElementById("mySelect").value = data_rs[0][
+                                    'status'
+                                ];
                                 // $('#status').val(data_rs[0]['status']);
-                                $('#course_description').val(data_rs[0]['course_description']);
-                                    
+                                $('#course_description').val(data_rs[0][
+                                    'course_description']);
+
                             }
                         });
                     });

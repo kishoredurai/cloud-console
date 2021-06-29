@@ -72,10 +72,17 @@ def provider_database_details():
 
 @app.route("/provider/database")
 def database():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     if not session.get("id") is None and person["user"] == 'provider':
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id ORDER BY applied_date DESC')
-        account = cursor.fetchall()
+        search = request.args.get('search')
+        if search=="SQL" or search=="PostgreSQL":
+            cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id and database_users.db_software=%s  ORDER BY applied_date DESC',[search,])
+            account = cursor.fetchall()
+            print(search)
+            return render_template("provider/provider_database.html", email=person["email"], name=person["name"], value=account)
+        else:
+            cursor.execute('SELECT * FROM database_users,user where database_users.user_id=user.user_id ORDER BY applied_date DESC')
+            account = cursor.fetchall()
         return render_template("provider/provider_database.html", email=person["email"], name=person["name"], value=account)
 
     else:
